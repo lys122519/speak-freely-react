@@ -1,9 +1,9 @@
-import { Avatar, Button, Col, Form, Input, Layout, Menu, Modal, Row, Tabs } from "antd";
-import { useState } from "react";
+import { Avatar, Button, Layout, Menu, Modal, Tabs } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { UserOutlined } from "@ant-design/icons";
 import "./header.less";
-import { useForm } from "antd/lib/form/Form";
+import Register from "./rigister";
 
 
 const {
@@ -18,7 +18,11 @@ const {
 const AppHeader: React.FC<any> = (props) => {
     const [user, setUser] = useState<any>();
     const [formVisible, setFormVisible] = useState<boolean>(false);
+    const [select, setSelect] = useState("/h/home");
     const navgite = useNavigate();
+    useEffect(() => {
+        navgite(select);
+    }, [select])
     const headerMenu = [
         { key: "/h/home", label: "首页" },
         { key: "/h/articles", label: "文章" },
@@ -26,15 +30,17 @@ const AppHeader: React.FC<any> = (props) => {
     ]
 
     return (
-        <Header>
+        <Header style={{background: "#fff"}}>
             <div className="header-content">
                 <Menu
-                    theme="dark"
+                    theme="light"
                     mode="horizontal"
-                    defaultSelectedKeys={["/"]}
+                    selectedKeys={[select]}
                     items={headerMenu}
                     onClick={(info) => {
-                        navgite(info.key)
+                        if(info.key !== select) {
+                            setSelect(info.key);
+                        }
                     }}
                 />
                 <div className="user-content">
@@ -63,7 +69,7 @@ const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
     } = props;
 
     return (
-        <Modal visible={isShow} footer={null} onCancel={onCancel}>
+        <Modal style={{top: 240}} visible={isShow} footer={null} onCancel={onCancel}>
             <Tabs defaultActiveKey="login">
                 <TabPane tab="登录" key="login">
                     Content of Tab Pane 1
@@ -73,85 +79,6 @@ const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
                 </TabPane>
             </Tabs>
         </Modal>
-    )
-}
-
-interface RegisterProps {
-
-}
-
-const Register: React.FC<RegisterProps> = (props) => {
-    const [time, setTime] = useState(0);
-    const [form] = useForm();
-    return (
-        <Form
-            name="register"
-            form={form}
-            labelCol={{ span: 5 }}
-            wrapperCol={{ span: 17 }}
-            className="register-form"
-        >
-            <Form.Item
-                label="用户名"
-                name="username"
-                rules={[{ required: true, message: '请输入您的用户名' }]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="邮箱"
-                name="e-mail"
-                rules={[{ required: true, message: '请输入您的邮箱' }]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="验证码"
-                name="e-mail"
-                rules={[{ required: true, message: '请输入验证码' }]}
-            >
-                <Input.Group compact>
-                    <Input style={{ width: 'calc(100% - 150px)' }} />
-                    <Button
-                        style={{ width: 150 }}
-                        disabled={!!time}
-                        onClick={() => {
-                            setTime(60);
-                            let timer = setInterval(() => {
-                                setTime((time) => {
-                                    if(time === 0) {
-                                        clearInterval(timer);
-                                        return 0;
-                                    }
-                                    return time - 1;
-                                });
-                            }, 1000);
-                        }}
-                    >
-                        {time ? `${time}秒后可重新获取` : "获取验证码"}
-                    </Button>
-                </Input.Group>
-            </Form.Item>
-            <Form.Item
-                label="密码"
-                name="password1"
-                rules={[{ required: true, message: '请输入您的密码' }]}
-            >
-                <Input.Password />
-            </Form.Item>
-            <Form.Item
-                label="确认密码"
-                name="password2"
-                rules={[{ required: true, message: '请输入您的邮箱' }]}
-            >
-                <Input />
-            </Form.Item>
-            <Row>
-                <Col offset={2} span={20}>
-                    <Button type="primary" block>注册</Button>
-                </Col>
-            </Row>
-        </Form>
     )
 }
 

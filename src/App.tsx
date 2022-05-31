@@ -12,9 +12,9 @@ import AppHeader from './pages/header';
 function App() {
   return (
     <div>
-      <Layout>
+      <Layout style={{minHeight: "100vh", display: "flex", flexDirection: "column"}}>
         <AppHeader />
-        <Content>
+        <Content style={{flexGrow: 1}}>
           <Outlet />
         </Content>
       </Layout>

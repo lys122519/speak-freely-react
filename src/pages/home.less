@@ -1,0 +1,72 @@
+.page-content {
+    padding: 20px 18%;
+
+    &>.tags-and-hot {
+        &>.tags-card {
+            background-color: #fff;
+            padding: 10px;
+
+            & .tags-content {
+                display: flex;
+                width: 100%;
+                min-height: 100%;
+                flex-wrap: wrap;
+                align-items: center;
+
+                &>.tags-item {
+                    margin: 10px;
+                    cursor: pointer;
+                    color: #666;
+
+                    &:hover {
+                        color: #000;
+                        transition: all 0.2s ease;
+                    }
+                }
+            }
+        }
+
+        &>.hot-card {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+
+            &>* {
+                display: flex;
+                justify-content: space-between;
+                flex-direction: column;
+                padding: 10px 20px;
+                height: 480px;
+                width: 30%;
+
+                // background-color: #fff;
+                & .card-title {
+                    cursor: pointer;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+
+                & .list-item {
+                    cursor: pointer;
+
+                    // display: flex;
+                    &:hover {
+                        text-decoration: solid;
+                        transition: all 0.2s ease;
+                    }
+
+                    &>*:first-child {
+                        width: 95%;
+                    }
+
+                    &>*:last-child {
+                        // display: flex;
+                        align-items: center;
+                        //margin-left: 10px;
+                    }
+                }
+            }
+        }
+    }
+}

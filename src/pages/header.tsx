@@ -4,7 +4,8 @@ import { useNavigate } from "react-router";
 import { UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
-
+import { useForm } from "antd/lib/form/Form";
+import Login from "./loginform";
 
 const {
     Header
@@ -72,7 +73,7 @@ const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
         <Modal style={{top: 240}} visible={isShow} footer={null} onCancel={onCancel}>
             <Tabs defaultActiveKey="login">
                 <TabPane tab="登录" key="login">
-                    Content of Tab Pane 1
+                    <Login/>
                 </TabPane>
                 <TabPane tab="注册" key="register">
                     <Register />

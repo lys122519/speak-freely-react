@@ -1,28 +1,46 @@
 .user-space-content {
     display: flex;
-    margin: 30px 160px 0;  
+    margin: 30px 160px 0;
     flex-grow: 1;
+
     //align-items: stretch;
     &>.left {
         width: 350px;
+
         &>.user-card {
             width: 100%;
         }
-    } 
+    }
+
     &>.right {
         flex-grow: 1;
-        margin-left: 50px;
+        margin-left: 24px;
         display: flex;
-        align-items: stretch;
-        &>.menu-box {
-            display: flex;
-            align-items: stretch;
-        }
-        &>.content-page {
-            flex-grow: 1;
+        flex-direction: column;
+
+        &>.content-header {
             background-color: #fff;
-            margin-left: 30px;
-            padding: 20px;
+
+            &>.site-page-header {
+                border-bottom: 1px solid rgb(235, 237, 240);
+            }
         }
+
+        &>.content {
+            flex-grow: 1;
+            display: flex;
+
+            &>.menu-box {
+                display: flex;
+                align-items: stretch;
+            }
+
+            &>.content-page {
+                flex-grow: 1;
+                background-color: #fff;
+                padding: 20px;
+            }
+        }
+
     }
 }

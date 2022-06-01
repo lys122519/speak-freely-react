@@ -10,6 +10,7 @@ const UserSpaceBaseContent: React.FC = () => {
     }, [select])
     const items = [
         { label: '文章列表', key: 'art-list' }, // 菜单项务必填写 key
+        { label: '项目列表', key: 'project-list' },
         { label: '基本信息', key: 'base-info' },
         { label: '修改密码', key: 'mod-pass' },
       ];
@@ -23,7 +24,7 @@ const UserSpaceBaseContent: React.FC = () => {
                         nav(info.key);
                     }
                 }}
-                style={{ width: 200, height: "100%" }}
+                style={{ width: 256, height: "100%" }}
                 defaultSelectedKeys={['art-list']}
                 mode="inline"
                 items={items}

@@ -26,12 +26,13 @@ const Login: React.FC<LoginProps> = (props) => {
                 url: config.host + "/user/login",
                 data: data,
             });
-            if(res.data.code === "200") {
+            if(res.data.code === 200) {
                 message.success("登录成功");
                 setUser({
                     status: 1,
                     ...res.data.data
                 });
+                sessionStorage.setItem("user", JSON.stringify(res.data.data));
                 props.close();
             } else {
                 message.error(res.data.msg);
@@ -51,6 +52,7 @@ const Login: React.FC<LoginProps> = (props) => {
             wrapperCol={{ span: 17 }}
             className="login-form"
             onFinish={onSubmit}
+            size="large"
         >
             <Form.Item
                 label="用户名/邮箱"

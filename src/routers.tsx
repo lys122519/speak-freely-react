@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import App from "./App";
 import { UserContext, UserInfo } from "./context/user";
@@ -10,6 +10,14 @@ import UserSpace from "./pages/space";
 
 const Routers: React.FC<any> = () => {
     const [user, setUser] = useState<UserInfo>();
+    useEffect(() => {
+        if (sessionStorage.getItem("user")) {
+            setUser({
+                status: 1,
+                ...JSON.parse(sessionStorage.getItem("user") as string)
+            });
+        }
+    }, []);
     return (
         <UserContext.Provider value={{userinfo: user, setUser: setUser}}>
             <Routes>

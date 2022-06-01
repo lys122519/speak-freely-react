@@ -1,7 +1,7 @@
-import { Avatar, Button, Layout, Menu, Modal, Tabs } from "antd";
+import { Avatar, Button, Dropdown, Layout, Menu, Modal, Tabs } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { UserOutlined } from "@ant-design/icons";
+import { PoweroffOutlined, UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
 import { useForm } from "antd/lib/form/Form";
@@ -17,6 +17,27 @@ const {
     TabPane
 } = Tabs;
 
+const UserMenu = () => {
+    const { setUser } = useContext(UserContext);
+    return (
+        <Menu
+            items={[
+                {
+                    key: 'logout',
+                    label: (
+                        <Button type="link" icon={<PoweroffOutlined />} onClick={() => {
+                            setUser(undefined);
+                            sessionStorage.removeItem("user");
+                            localStorage.removeItem("user");
+                        }}>
+                            退出登录
+                        </Button>
+                    ),
+                },
+            ]}
+        />
+    );
+};
 
 const AppHeader: React.FC<any> = (props) => {
     const { userinfo, setUser } = useContext(UserContext);
@@ -25,7 +46,7 @@ const AppHeader: React.FC<any> = (props) => {
     const navgite = useNavigate();
     useEffect(() => {
         navgite(select);
-    }, [select])
+    }, [select]);
     const headerMenu = [
         { key: "/h/home", label: "首页" },
         { key: "/h/articles", label: "文章" },
@@ -61,11 +82,13 @@ const AppHeader: React.FC<any> = (props) => {
 
 
 const UserAvatar = () => {
-    const {userinfo} = useContext(UserContext);
+    const { userinfo } = useContext(UserContext);
     return (
-        <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
-            <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-        </Link>
+        <Dropdown overlay={<UserMenu />}>
+            <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
+                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+            </Link>
+        </Dropdown>
     )
 }
 

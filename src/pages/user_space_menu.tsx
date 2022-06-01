@@ -1,13 +1,15 @@
 import { Menu } from "antd";
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./user_space_menu.less";
 
 const UserSpaceBaseContent: React.FC = () => {
     const nav = useNavigate();
+    const location = useLocation();
     const [select, setSelect] = useState("art-list");
     useEffect(() => {
-    }, [select])
+        setSelect(location.pathname.split("/").pop() as string);
+    }, [location]);
     const items = [
         { label: '文章列表', key: 'art-list' }, // 菜单项务必填写 key
         { label: '项目列表', key: 'project-list' },
@@ -25,7 +27,7 @@ const UserSpaceBaseContent: React.FC = () => {
                     }
                 }}
                 style={{ width: 256, height: "100%" }}
-                defaultSelectedKeys={['art-list']}
+                selectedKeys={[select]}
                 mode="inline"
                 items={items}
             />

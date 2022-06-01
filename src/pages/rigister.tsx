@@ -14,9 +14,11 @@ const Register: React.FC<RegisterProps> = (props) => {
         <Form
             name="register"
             form={form}
-            labelCol={{ span: 5 }}
+            labelCol={{ offset:1, span: 4 }}
+            
             wrapperCol={{ span: 17 }}
             className="register-form"
+            size="large"
         >
             <Form.Item
                 label="用户名"
@@ -73,7 +75,7 @@ const Register: React.FC<RegisterProps> = (props) => {
             >
                 <Input />
             </Form.Item>
-            <Row>
+            <Row style={{marginTop: 36}}>
                 <Col offset={2} span={20}>
                     <Button type="primary" block>注册</Button>
                 </Col>

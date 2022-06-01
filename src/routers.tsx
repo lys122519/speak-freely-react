@@ -9,10 +9,13 @@ const Routers: React.FC<any> = () => {
         <Routes>
             <Route path="/">
                 <Route path="h/*" element={<App />}>
-                    <Route path="home" element={<Home />}>
+                    <Route path="home/*" element={<Home />}>
                         <Route path="recommendation" element={<Recommendation />}></Route>
                     </Route>
                     <Route path="articles" element={<Article />} />
+                </Route>
+                <Route path="space">
+                    <Route path=":userId"></Route>
                 </Route>
             </Route>
         </Routes>

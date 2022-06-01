@@ -1,6 +1,7 @@
 import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import "./space.less";
+import UserSpaceCard from "./user_space_card";
 
 const { Header, Content } = Layout;
 
@@ -13,7 +14,7 @@ const UserSpace: React.FC = () => {
                     <div className="user-space-content">
                         <div className="left">
                             <div className="user-card">
-
+                                <UserSpaceCard/>
                             </div>
                         </div>
                         <div className="right">

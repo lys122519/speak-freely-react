@@ -1,25 +1,33 @@
+import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import App from "./App";
+import { UserContext, UserInfo } from "./context/user";
 import Article from "./pages/article";
 import Home from "./pages/home";
+import ModPass from "./pages/mod_pass";
 import Recommendation from "./pages/recommendation";
 import UserSpace from "./pages/space";
 
 const Routers: React.FC<any> = () => {
+    const [user, setUser] = useState<UserInfo>();
     return (
-        <Routes>
-            <Route path="/">
-                <Route path="h/*" element={<App />}>
-                    <Route path="home/*" element={<Home />}>
-                        <Route path="recommendation" element={<Recommendation />}></Route>
+        <UserContext.Provider value={{userinfo: user, setUser: setUser}}>
+            <Routes>
+                <Route path="/">
+                    <Route path="h/*" element={<App />}>
+                        <Route path="home/*" element={<Home />}>
+                            <Route path="recommendation" element={<Recommendation />}></Route>
+                        </Route>
+                        <Route path="articles" element={<Article />} />
                     </Route>
-                    <Route path="articles" element={<Article />} />
+                    <Route path="space/*">
+                        <Route path=":userId/*" element={<UserSpace />}>
+                            <Route path="mod-pass" element={<ModPass />}></Route>
+                        </Route>
+                    </Route>
                 </Route>
-                <Route path="space">
-                    <Route path=":userId" element={<UserSpace />}></Route>
-                </Route>
-            </Route>
-        </Routes>
+            </Routes>
+        </UserContext.Provider>
     )
 }
 

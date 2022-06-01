@@ -23,7 +23,7 @@ interface FetchResult<T> {
     error?: any
 }
 
-export function useFetch<T>(options:RequestInfo, init: T):FetchResult<T> {
+export function useFetch<T>(options:RequestInfo, init: T, effectArr?: any[]):FetchResult<T> {
     const [res, setRes] = useState(init);
     const [err, setErr] = useState<any>();
     const [isLoading, setloading] = useState(false);
@@ -46,7 +46,7 @@ export function useFetch<T>(options:RequestInfo, init: T):FetchResult<T> {
             }
         }
         load();
-    }, []);
+    }, effectArr ? [...effectArr] : []);
 
     return {
         data: res,

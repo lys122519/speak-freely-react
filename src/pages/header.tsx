@@ -1,11 +1,13 @@
 import { Avatar, Button, Layout, Menu, Modal, Tabs } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
 import { useForm } from "antd/lib/form/Form";
 import Login from "./loginform";
+import { UserContext, UserInfo } from "../context/user";
+import { Link } from "react-router-dom";
 
 const {
     Header
@@ -17,7 +19,7 @@ const {
 
 
 const AppHeader: React.FC<any> = (props) => {
-    const [user, setUser] = useState<any>();
+    const { userinfo, setUser } = useContext(UserContext);
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const [select, setSelect] = useState("/h/home");
     const navgite = useNavigate();
@@ -31,7 +33,7 @@ const AppHeader: React.FC<any> = (props) => {
     ]
 
     return (
-        <Header style={{background: "#fff"}}>
+        <Header style={{ background: "#fff" }}>
             <div className="header-content">
                 <Menu
                     theme="light"
@@ -39,16 +41,16 @@ const AppHeader: React.FC<any> = (props) => {
                     selectedKeys={[select]}
                     items={headerMenu}
                     onClick={(info) => {
-                        if(info.key !== select) {
+                        if (info.key !== select) {
                             setSelect(info.key);
                         }
                     }}
                 />
                 <div className="user-content">
                     {
-                        !user
+                        !(userinfo && userinfo.status)
                             ? <Button type="link" onClick={() => { setFormVisible(true) }}>登录/注册</Button>
-                            : <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+                            : <UserAvatar />
                     }
                 </div>
             </div>
@@ -58,9 +60,19 @@ const AppHeader: React.FC<any> = (props) => {
 }
 
 
+const UserAvatar = () => {
+    const {userinfo} = useContext(UserContext);
+    return (
+        <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
+            <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+        </Link>
+    )
+}
+
+
 interface LoginFormBoxProps {
     isShow?: boolean
-    onCancel?: () => void
+    onCancel: () => void
 }
 
 const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
@@ -70,10 +82,10 @@ const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
     } = props;
 
     return (
-        <Modal style={{top: 240}} visible={isShow} footer={null} onCancel={onCancel}>
+        <Modal style={{ top: 240 }} visible={isShow} footer={null} onCancel={onCancel}>
             <Tabs defaultActiveKey="login">
                 <TabPane tab="登录" key="login">
-                    <Login/>
+                    <Login close={onCancel} />
                 </TabPane>
                 <TabPane tab="注册" key="register">
                     <Register />

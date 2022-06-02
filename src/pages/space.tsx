@@ -1,4 +1,4 @@
-import { Divider, Layout, PageHeader } from "antd";
+import { Layout, PageHeader } from "antd";
 import { Outlet } from "react-router-dom";
 import "./space.less";
 import UserSpaceMenu from "./user_space_menu";

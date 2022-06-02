@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.less';
-import { Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import AppHeader from './pages/header';
 
 

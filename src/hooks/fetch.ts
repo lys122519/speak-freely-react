@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import config from "../config";
+import req from "../request";
 
 type ResultDataType<T> = {
     code: number
@@ -6,16 +8,16 @@ type ResultDataType<T> = {
     data: T
 }
 
-class ResultData<T> {
-    code: number;
-    msg: string;
-    data: T;
-    constructor(data: ResultDataType<T>) {
-        this.code = data.code;
-        this.msg = data.msg;
-        this.data = data.data;
-    }
-}
+// class ResultData<T> {
+//     code: number;
+//     msg: string;
+//     data: T;
+//     constructor(data: ResultDataType<T>) {
+//         this.code = data.code;
+//         this.msg = data.msg;
+//         this.data = data.data;
+//     }
+// }
 
 interface FetchResult<T> {
     data: T
@@ -23,7 +25,12 @@ interface FetchResult<T> {
     error?: any
 }
 
-export function useFetch<T>(options:RequestInfo, init: T, effectArr?: any[]):FetchResult<T> {
+interface FetchOptions {
+    path: string
+    data: any
+}
+
+export function useFetch<T>(options: FetchOptions, init: T):FetchResult<T> {
     const [res, setRes] = useState(init);
     const [err, setErr] = useState<any>();
     const [isLoading, setloading] = useState(false);
@@ -32,8 +39,12 @@ export function useFetch<T>(options:RequestInfo, init: T, effectArr?: any[]):Fet
         const load = async () => {
             setloading(true);
             try {
-                let res = await fetch(options);
-                let json:ResultDataType<T> = await res.json();
+                let res = await req({
+                    url: config.host + options.path,
+                    method: "GET",
+                    data: options.data
+                });
+                let json:ResultDataType<T> = res.data;
                 if(json.code === 200) {
                     setRes(json.data);
                 } else {
@@ -46,7 +57,7 @@ export function useFetch<T>(options:RequestInfo, init: T, effectArr?: any[]):Fet
             }
         }
         load();
-    }, effectArr ? [...effectArr] : []);
+    }, [options]);
 
     return {
         data: res,
@@ -82,6 +93,6 @@ export function useTestFetch<T>(data: T, init: T, fail?: boolean):[T, boolean, a
             }
         }
         load();
-    }, []);
+    }, [data, fail]);
     return [res, loading, err];
 }

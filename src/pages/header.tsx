@@ -4,7 +4,6 @@ import { useNavigate } from "react-router";
 import { EditOutlined, PoweroffOutlined, UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
-import { useForm } from "antd/lib/form/Form";
 import Login from "./loginform";
 import { UserContext, UserInfo } from "../context/user";
 import { Link } from "react-router-dom";
@@ -40,13 +39,13 @@ const UserMenu = () => {
 };
 
 const AppHeader: React.FC<any> = (props) => {
-    const { userinfo, setUser } = useContext(UserContext);
+    const { userinfo } = useContext(UserContext);
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const [select, setSelect] = useState("/h/home");
     const navgite = useNavigate();
     useEffect(() => {
         navgite(select);
-    }, [select]);
+    }, [select, navgite]);
     const headerMenu = [
         { key: "/h/home", label: "首页" },
         { key: "/h/articles", label: "文章" },

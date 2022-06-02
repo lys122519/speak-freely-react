@@ -1,12 +1,11 @@
 import { RightOutlined } from "@ant-design/icons";
-import { Button, Menu, MenuProps, Skeleton, Tabs, Typography } from "antd";
+import { Menu, MenuProps, Skeleton, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useTestFetch } from "../hooks/fetch";
 import "./home.less";
 
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 
 const tag = new Array(30).fill("计算机");
@@ -108,7 +107,7 @@ const Content: React.FC<any> = (props) => {
     const nav = useNavigate();
     useEffect(() => {
         nav(`/h/home/${menuSelect}`);
-    }, [menuSelect])
+    }, [menuSelect, nav])
     const items: MenuProps['items'] = [
         {
             label: '关注',

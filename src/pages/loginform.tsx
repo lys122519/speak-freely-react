@@ -11,7 +11,7 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = (props) => {
-    const {userinfo, setUser} = useContext(UserContext);
+    const {setUser} = useContext(UserContext);
     const [loading, setLoading] = useState(false);
     const [form] = useForm();
     const onSubmit = async (v: any) => {

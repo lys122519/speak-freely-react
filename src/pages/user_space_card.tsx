@@ -1,4 +1,4 @@
-import { Avatar, Button, Checkbox, Col, Divider, Form, Input, Row} from "antd";
+import { Avatar, Divider } from "antd";
 import "./user_space_card.less";
 import { UserOutlined } from "@ant-design/icons";
 import { useContext } from "react";
@@ -17,33 +17,33 @@ const UserSpaceCard: React.FC<UserSpaceCardProps> = (props) =>{
                 <Avatar size={80} icon={<UserOutlined />} src={userinfo?.avatarUrl} style={{backgroundColor: "#87d068"}} />
             </div>
             <div  onClick={() => { }} className="user-space-card-name">
-                <a>{userinfo?.nickname}</a>
+                <div>{userinfo?.nickname}</div>
             </div>
             <div className="user-space-card-email">
-                <a>{userinfo?.email}</a>
+                <div>{userinfo?.email}</div>
             </div>
             <div className="user-space-card-model1">
-                <a onClick={() => { }} className="model">
+                <div onClick={() => { }} className="model">
                     <div className="figure">123</div>
                     <div className="name">关注</div>
-                </a>
+                </div>
                 <Divider type="vertical" style={{height: 30}} />
-                <a onClick={() => { }} className="model">
+                <div onClick={() => { }} className="model">
                     <div className="figure">12</div>
                     <div className="name">文章</div>
-                </a>
+                </div>
                 <Divider type="vertical" style={{height: 30}} />
-                <a onClick={() => { }} className="model">
+                <div onClick={() => { }} className="model">
                     <div className="figure">0</div>
                     <div className="name">项目</div>
-                </a>
+                </div>
             </div>
             <Divider />
             <div className="user-space-card-model2">
-                <a onClick={() => { }}>待添加</a>
-                <a onClick={() => { }}>待添加</a>
-                <a onClick={() => { }}>待添加</a>
-                <a onClick={() => { }}>待添加</a>
+                <div onClick={() => { }}>待添加</div>
+                <div onClick={() => { }}>待添加</div>
+                <div onClick={() => { }}>待添加</div>
+                <div onClick={() => { }}>待添加</div>
             </div>
         </div>
     )

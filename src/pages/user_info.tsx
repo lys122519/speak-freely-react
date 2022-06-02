@@ -23,7 +23,7 @@ const UserInfo: React.FC = () => {
 
     useEffect(() => {
         baseInfoForm.setFieldsValue(userinfo)
-    }, [userinfo])
+    }, [userinfo, baseInfoForm])
 
     const onEmailSubmit = async () => {
         setEmailLoading(true);
@@ -276,9 +276,9 @@ const UserInfo: React.FC = () => {
                                 setBaseInfoStatus(false);
                             }}>取消</Button>
                         </>
-                        : <a style={{display: "inline-block", padding: "0 10px"}} onClick={() => {
+                        : <Button type="link" key="edit" onClick={() => {
                             setBaseInfoStatus(true);
-                        }} >编辑</a>}
+                        }} >编辑</Button>}
                 </Form.Item>
             </Form>
             <PageHeader
@@ -349,9 +349,9 @@ const UserInfo: React.FC = () => {
                                 setEmailStatus(false);
                             }}>取消</Button>
                         </>
-                        : <a style={{display: "inline-block", padding: "0 10px"}} onClick={() => {
+                        : <Button type="link" key="email-edit" onClick={() => {
                             setEmailStatus(true);
-                        }} >更改</a>}
+                        }} >更改</Button>}
                 </Form.Item>
             </Form>
         </div>

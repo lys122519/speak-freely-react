@@ -1,5 +1,5 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { Avatar, Button, List, Skeleton, Space } from "antd";
+import { Button, List, Skeleton } from "antd";
 import React from "react";
 import { useTestFetch } from "../hooks/fetch";
 

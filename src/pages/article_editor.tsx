@@ -4,7 +4,7 @@ import { Button } from 'antd';
 
 const ArtEditor: React.FC = (props) => {
     const [editorValue, setEditorValue] = useState("# （在这里输入标题）");
-    const [imageUrl, setImageUrl] = useState("");
+    //const [imageUrl, setImageUrl] = useState("");
     const handleChange = (value: any) => {
         setEditorValue(value);
     }

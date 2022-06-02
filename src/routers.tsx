@@ -3,10 +3,12 @@ import { Routes, Route } from "react-router-dom";
 import App from "./App";
 import { UserContext, UserInfo } from "./context/user";
 import Article from "./pages/article";
+import ArtEditor from "./pages/article_editor";
 import Home from "./pages/home";
 import ModPass from "./pages/mod_pass";
 import Recommendation from "./pages/recommendation";
 import UserSpace from "./pages/space";
+import UserInfoC from "./pages/user_info";
 
 const Routers: React.FC<any> = () => {
     const [user, setUser] = useState<UserInfo>();
@@ -18,6 +20,11 @@ const Routers: React.FC<any> = () => {
             });
         }
     }, []);
+    useEffect(() => {
+        if(user) {
+            sessionStorage.setItem("user", JSON.stringify(user));
+        }
+    }, [user])
     return (
         <UserContext.Provider value={{userinfo: user, setUser: setUser}}>
             <Routes>
@@ -31,8 +38,10 @@ const Routers: React.FC<any> = () => {
                     <Route path="space/*">
                         <Route path=":userId/*" element={<UserSpace />}>
                             <Route path="mod-pass" element={<ModPass />}></Route>
+                            <Route path="base-info" element={<UserInfoC />}></Route>
                         </Route>
                     </Route>
+                    <Route path="editor" element={<ArtEditor />} />
                 </Route>
             </Routes>
         </UserContext.Provider>

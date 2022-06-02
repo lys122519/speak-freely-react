@@ -5,7 +5,7 @@ export interface UserInfo {
     username: string
     role: string
     address: string
-    avatar_url: string
+    avatarUrl: string
     id: number
     password: string
     phone: string
@@ -26,7 +26,7 @@ export const UserContext = createContext<{userinfo: UserInfo | undefined, setUse
         phone: "",
         token: "",
         address: "",
-        avatar_url: ""
+        avatarUrl: ""
     },
     setUser: () => {}
 });

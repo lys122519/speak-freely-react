@@ -14,7 +14,7 @@ const UserSpaceCard: React.FC<UserSpaceCardProps> = (props) =>{
     return(
         <div className="user-space-card-main">
             <div className="user-space-card-img">
-                <Avatar size={80} icon={<UserOutlined />} src={userinfo?.avatar_url} style={{backgroundColor: "#87d068"}} />
+                <Avatar size={80} icon={<UserOutlined />} src={userinfo?.avatarUrl} style={{backgroundColor: "#87d068"}} />
             </div>
             <div  onClick={() => { }} className="user-space-card-name">
                 <a>{userinfo?.nickname}</a>

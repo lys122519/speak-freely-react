@@ -32,7 +32,6 @@ const Login: React.FC<LoginProps> = (props) => {
                     status: 1,
                     ...res.data.data
                 });
-                sessionStorage.setItem("user", JSON.stringify(res.data.data));
                 props.close();
             } else {
                 message.error(res.data.msg);

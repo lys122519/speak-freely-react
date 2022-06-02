@@ -1,7 +1,7 @@
 import { Avatar, Button, Dropdown, Layout, Menu, Modal, Tabs } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { PoweroffOutlined, UserOutlined } from "@ant-design/icons";
+import { EditOutlined, PoweroffOutlined, UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
 import { useForm } from "antd/lib/form/Form";
@@ -84,11 +84,18 @@ const AppHeader: React.FC<any> = (props) => {
 const UserAvatar = () => {
     const { userinfo } = useContext(UserContext);
     return (
-        <Dropdown overlay={<UserMenu />}>
-            <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
-                <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-            </Link>
-        </Dropdown>
+        <div style={{display: "flex", alignItems: "center"}}>
+            <Dropdown overlay={<UserMenu />}>
+                <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
+                    <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+                </Link>
+            </Dropdown>
+            <div style={{marginLeft: 20}}>
+                <Link to="/editor">
+                    <Button icon={<EditOutlined />} type="primary">写文章</Button>
+                </Link>
+            </div>
+        </div>
     )
 }
 
@@ -105,13 +112,13 @@ const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
     } = props;
 
     return (
-        <Modal style={{ top: 240 }} visible={isShow} footer={null} onCancel={onCancel}>
+        <Modal style={{ top: 240 }} width={600} visible={isShow} footer={null} onCancel={onCancel}>
             <Tabs defaultActiveKey="login">
                 <TabPane tab="登录" key="login">
                     <Login close={onCancel} />
                 </TabPane>
                 <TabPane tab="注册" key="register">
-                    <Register />
+                    <Register close={onCancel} />
                 </TabPane>
             </Tabs>
         </Modal>

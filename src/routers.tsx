@@ -3,8 +3,7 @@ import React from "react";
 import { Spin } from "antd";
 import { Routes, Route } from "react-router-dom";
 import { UserContext, UserInfo } from "./context/user";
-import MDArticle from "./pages/web/article/article";
-
+//import SearchResult from "./pages/web/search_result/result";
 // import Article from "./pages/article";
 // import ArtEditor from "./pages/web/art_editor/article_editor";
 // import Home from "./pages/web/home/home";
@@ -16,6 +15,8 @@ import MDArticle from "./pages/web/article/article";
 // import AdminIndex from "./pages/admin";
 // import ArtAdmin from "./pages/admin/content/article";
 // import UserAdmin from "./pages/admin/content/user";
+const SearchResult = React.lazy(() => import('./pages/web/search_result/result'));
+const MDArticle = React.lazy(() => import('./pages/web/article/article'));
 const App = React.lazy(() => import('./App'));
 const ServerDataIndex = React.lazy(() => import('./pages/admin/content/site_data/server_data'));
 const Article = React.lazy(() => import('./pages/article'));
@@ -66,6 +67,7 @@ const Routers: React.FC<any> = () => {
                         <Route path="article" element={<Lazy render={<MDArticle />} />}>
                             <Route path=":articleId"></Route>
                         </Route>
+                        <Route path="search" element={<Lazy render={<SearchResult />} />}></Route>
                     </Route>
 
                 </Route>

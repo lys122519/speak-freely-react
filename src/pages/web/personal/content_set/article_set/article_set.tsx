@@ -19,29 +19,42 @@ type ArticleData = {
     userid: string
 }
 
+type fetchResponseData = {
+    currents: number
+    pages: number
+    records: ArticleData[]
+    size: number
+    total: number
+}
+
 const ArticleSet: React.FC = () => {
     const [page, setPage] = useState(1);
     const { userinfo } = useContext(UserContext);
-    const [arts, refresh] = useFetch<ArticleData[]>({
-        path: "/article",
-        token: userinfo?.token
-    }, []);
-
+    const pageSize = 6;
+    const [res, refresh, _, err, isLoading] = useFetch<fetchResponseData | undefined>({
+        path: "/article/page",
+        token: userinfo?.token,
+        data: {
+            pageNum: page,
+            pageSize: pageSize
+        }
+    }, undefined);
 
     return (
         <>
             <Card>
                 <Segmented options={['全部', '草稿', '已发布']} />
                 <List
-                    dataSource={arts}
+                    dataSource={res?.records ?? []}
                     pagination={{
                         position: "bottom",
                         total: 20,
-                        pageSize: 6,
+                        pageSize: pageSize,
                         onChange: (p) => {
                             setPage(p)
                         },
                     }}
+                    loading={isLoading}
                     style={{marginTop: 16}}
                     renderItem={(item) => {
                         return (

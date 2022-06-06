@@ -7,6 +7,7 @@ import Register from "./rigister";
 import Login from "./loginform";
 import { UserContext, UserInfo } from "../../../context/user";
 import { Link } from "react-router-dom";
+import Search from "./search";
 
 const {
     Header
@@ -48,7 +49,7 @@ const AppHeader: React.FC<any> = (props) => {
     useEffect(() => {
         setSelect(location.pathname.split("/").filter((_, index) => index <= 2 ? true : false).join("/"));
     }, [location]);
-    
+
     const headerMenu = [
         { key: "/h/home", label: "首页" },
         { key: "/h/articles", label: "文章" },
@@ -57,27 +58,32 @@ const AppHeader: React.FC<any> = (props) => {
 
     return (
         <Header style={{ background: "#fff" }}>
-            <div className="header-content">
-                <Menu
-                    theme="light"
-                    mode="horizontal"
-                    selectedKeys={[select]}
-                    items={headerMenu}
-                    onClick={(info) => {
-                        if (info.key !== select) {
-                            setSelect(info.key);
-                            navgite(info.key);
+            <Row align="middle" justify="space-between" className="header-content">
+                <Col>
+                    <Menu
+                        theme="light"
+                        mode="horizontal"
+                        selectedKeys={[select]}
+                        items={headerMenu}
+                        onClick={(info) => {
+                            if (info.key !== select) {
+                                setSelect(info.key);
+                                navgite(info.key);
+                            }
+                        }}
+                    />
+                </Col>
+                <Col span={8} style={{alignItems: "stretch", display: "flex", flexDirection: "column", justifyContent: "center"}}><Search /></Col>
+                <Col>
+                    <div className="user-content">
+                        {
+                            !(userinfo && userinfo.status)
+                                ? <Button type="link" onClick={() => { setFormVisible(true) }}>登录/注册</Button>
+                                : <UserAvatar />
                         }
-                    }}
-                />
-                <div className="user-content">
-                    {
-                        !(userinfo && userinfo.status)
-                            ? <Button type="link" onClick={() => { setFormVisible(true) }}>登录/注册</Button>
-                            : <UserAvatar />
-                    }
-                </div>
-            </div>
+                    </div>
+                </Col>
+            </Row>
             <LoginFormBox isShow={formVisible} onCancel={() => { setFormVisible(false) }} />
         </Header>
     )

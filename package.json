@@ -27,7 +27,7 @@
     "react-router-dom": "6",
     "react-scripts": "5.0.1",
     "react-syntax-highlighter": "^15.5.0",
-    "remark-gfm": "3.0.0",
+    "remark-gfm": "^3.0.1",
     "remark-toc": "^8.0.1",
     "request": "^2.88.2",
     "showdown": "^2.1.0",

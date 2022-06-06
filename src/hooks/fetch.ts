@@ -47,7 +47,7 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
             let res = await req({
                 url: config.host + ops.path,
                 method: "GET",
-                data: ops.data,
+                params: ops.data,
                 headers: {
                     token: ops.token ?? ""
                 }

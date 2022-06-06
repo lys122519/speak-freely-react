@@ -1,30 +1,23 @@
 import { Layout, PageHeader } from "antd";
 import { Outlet } from "react-router-dom";
-import "./space.less";
+import "./personal.less";
 import UserSpaceMenu from "./user_space_menu";
-import UserSpaceCard from "./user_space_card";
+import UserSpaceCard from "../../user_space_card";
 
 const { Header, Content } = Layout;
 
-const UserSpace: React.FC = () => {
+const Personal: React.FC = () => {
     return (
         <div>
-            <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column", minWidth: 1500 }}>
-                <Header>222</Header>
+            <Layout style={{ display: "flex", flexDirection: "column", minWidth: 1500 }}>
                 <Content style={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
                     <div className="user-space-content">
-                        <div className="left">
+                        {/* <div className="left">
                             <div className="user-card">
                                 <UserSpaceCard />
                             </div>
-                        </div>
+                        </div> */}
                         <div className="right">
-                            <div className="content-header">
-                                <PageHeader
-                                    className="site-page-header"
-                                    title="个人空间"
-                                />
-                            </div>
                             <div className="content">
                                 <div className="menu-box">
                                     <UserSpaceMenu />
@@ -42,4 +35,4 @@ const UserSpace: React.FC = () => {
     )
 }
 
-export default UserSpace;
+export default Personal;

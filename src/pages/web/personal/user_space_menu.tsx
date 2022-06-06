@@ -5,31 +5,37 @@ import "./user_space_menu.less";
 
 const UserSpaceBaseContent: React.FC = () => {
     const nav = useNavigate();
-    const location = useLocation();
     const [select, setSelect] = useState("art-list");
+    const location = useLocation();
+
     useEffect(() => {
         setSelect(location.pathname.split("/").pop() as string);
     }, [location]);
     const items = [
-        { label: '文章列表', key: 'art-list' }, // 菜单项务必填写 key
-        { label: '项目列表', key: 'project-list' },
         { label: '基本信息', key: 'base-info' },
-        { label: '修改密码', key: 'mod-pass' },
-      ];
+        { label: '账户设置', key: 'acount-set' },
+        {
+            label: '内容管理',
+            key: 'content-admin',
+            children: [
+                { label: '文章管理', key: 'article-set' },
+            ]
+        }
+    ];
 
     return (
         <div className="user-space-base-content">
             <Menu
                 onClick={(info) => {
                     setSelect(info.key)
-                    if(info.key !== select) {
+                    if (info.key !== select) {
                         nav(info.key);
                     }
                 }}
                 style={{ width: 256, height: "100%" }}
                 selectedKeys={[select]}
-                mode="inline"
                 items={items}
+                mode="inline"
             />
         </div>
     )

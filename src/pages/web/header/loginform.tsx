@@ -2,9 +2,9 @@ import { Button, Checkbox, Col, Form, Input, message, Row} from "antd";
 import { useContext, useState } from "react";
 import "./header.less";
 import { useForm } from "antd/lib/form/Form";
-import request from  "../request";
-import config from "../config";
-import { UserContext } from "../context/user";
+import request from  "../../../request";
+import config from "../../../config";
+import { UserContext } from "../../../context/user";
 
 interface LoginProps {
     close: () => void

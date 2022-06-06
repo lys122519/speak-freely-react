@@ -2,7 +2,7 @@ import { RightOutlined } from "@ant-design/icons";
 import { Menu, MenuProps, Skeleton, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useTestFetch } from "../hooks/fetch";
+import { useTestFetch } from "../../../hooks/fetch";
 import "./home.less";
 
 const { Title, Text } = Typography;

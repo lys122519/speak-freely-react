@@ -1,12 +1,19 @@
+import { message } from "antd";
 import request, { AxiosRequestConfig } from "axios";
 
 const req = async (option: AxiosRequestConfig<any>) => {
     try {
         let res = await request({
             ...option,
-            timeout: 5000
+            timeout: 5000,
         });
         if (res.status >= 200 && res.status < 300) {
+            if (res.data.code === 999) {
+                message.warning("登录已失效");
+                sessionStorage.removeItem("user");
+                window.location.href = "/h/home";
+                return Promise.reject();
+            }
             return Promise.resolve(res);
         } else {
             return Promise.reject({

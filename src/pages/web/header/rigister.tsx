@@ -2,9 +2,9 @@ import { Button, Col, Form, Input, message, Row } from "antd";
 import { useContext, useState } from "react";
 import "./header.less";
 import { useForm } from "antd/lib/form/Form";
-import req from "../request";
-import config from "../config";
-import { UserContext } from "../context/user";
+import req from "../../../request";
+import config from "../../../config";
+import { UserContext } from "../../../context/user";
 
 interface RegisterProps {
     close: () => void

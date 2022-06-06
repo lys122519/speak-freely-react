@@ -1,11 +1,11 @@
-import { Avatar, Button, Dropdown, Layout, Menu, Modal, Tabs } from "antd";
+import { Avatar, Button, Col, Dropdown, Layout, Menu, Modal, Row, Tabs } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { EditOutlined, PoweroffOutlined, UserOutlined } from "@ant-design/icons";
+import { useLocation, useNavigate } from "react-router";
+import { EditOutlined, PoweroffOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
 import Login from "./loginform";
-import { UserContext, UserInfo } from "../context/user";
+import { UserContext, UserInfo } from "../../../context/user";
 import { Link } from "react-router-dom";
 
 const {
@@ -43,9 +43,12 @@ const AppHeader: React.FC<any> = (props) => {
     const [formVisible, setFormVisible] = useState<boolean>(false);
     const [select, setSelect] = useState("/h/home");
     const navgite = useNavigate();
+    const location = useLocation();
+
     useEffect(() => {
-        navgite(select);
-    }, [select, navgite]);
+        setSelect(location.pathname.split("/").filter((_, index) => index <= 2 ? true : false).join("/"));
+    }, [location]);
+    
     const headerMenu = [
         { key: "/h/home", label: "首页" },
         { key: "/h/articles", label: "文章" },
@@ -63,6 +66,7 @@ const AppHeader: React.FC<any> = (props) => {
                     onClick={(info) => {
                         if (info.key !== select) {
                             setSelect(info.key);
+                            navgite(info.key);
                         }
                     }}
                 />
@@ -83,18 +87,29 @@ const AppHeader: React.FC<any> = (props) => {
 const UserAvatar = () => {
     const { userinfo } = useContext(UserContext);
     return (
-        <div style={{display: "flex", alignItems: "center"}}>
-            <Dropdown overlay={<UserMenu />}>
-                <Link to={`/space/${(userinfo as UserInfo).id}/art-list`} >
-                    <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-                </Link>
-            </Dropdown>
-            <div style={{marginLeft: 20}}>
-                <Link to="/editor">
+        <Row align="middle" gutter={20}>
+            <Col>
+                <Dropdown overlay={<UserMenu />}>
+                    <Link to={`/h/personal/base-info`} >
+                        <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} src={userinfo?.avatarUrl} />
+                    </Link>
+                </Dropdown>
+            </Col>
+            <Col>
+                <Link to="/h/editor">
                     <Button icon={<EditOutlined />} type="primary">写文章</Button>
                 </Link>
-            </div>
-        </div>
+            </Col>
+            {
+                userinfo?.role === "ROLE_ADMIN"
+                    ? <Col>
+                        <Link to="/admin/server-data">
+                            <Button icon={<SettingOutlined />} >管理端</Button>
+                        </Link>
+                    </Col>
+                    : null
+            }
+        </Row>
     )
 }
 

@@ -3,7 +3,7 @@ import './App.less';
 import { Layout } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
 import { Outlet } from 'react-router-dom';
-import AppHeader from './pages/header';
+import AppHeader from './pages/web/header/header';
 
 
  
@@ -12,7 +12,7 @@ import AppHeader from './pages/header';
 function App() {
   return (
     <div>
-      <Layout style={{minHeight: "100vh", display: "flex", flexDirection: "column"}}>
+      <Layout style={{minHeight: "100vh", display: "flex", flexDirection: "column", minWidth: 1600}}>
         <AppHeader />
         <Content style={{flexGrow: 1}}>
           <Outlet />

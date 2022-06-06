@@ -1,4 +1,6 @@
+import { message } from "antd";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import config from "../config";
 import req from "../request";
 
@@ -19,54 +21,64 @@ type ResultDataType<T> = {
 //     }
 // }
 
-interface FetchResult<T> {
-    data: T
-    isLoading: boolean
+type FetchResult<T> = [
+    data: T,
+    refresh: () => Promise<void>,
+    setOps: React.Dispatch<React.SetStateAction<FetchOptions>>,
+    isLoading: boolean,
     error?: any
-}
+]
 
 interface FetchOptions {
     path: string
-    data: any
+    data?: any
+    token?: string
 }
 
-export function useFetch<T>(options: FetchOptions, init: T):FetchResult<T> {
+export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
+    const [ops, setOps] = useState(options);
     const [res, setRes] = useState(init);
     const [err, setErr] = useState<any>();
     const [isLoading, setloading] = useState(false);
 
-    useEffect(() => {
-        const load = async () => {
-            setloading(true);
-            try {
-                let res = await req({
-                    url: config.host + options.path,
-                    method: "GET",
-                    data: options.data
-                });
-                let json:ResultDataType<T> = res.data;
-                if(json.code === 200) {
-                    setRes(json.data);
-                } else {
-                    throw new Error(json.msg);
+    const load = async () => {
+        setloading(true);
+        try {
+            let res = await req({
+                url: config.host + ops.path,
+                method: "GET",
+                data: ops.data,
+                headers: {
+                    token: ops.token ?? ""
                 }
-            } catch(err) {
-                setErr(err);
-            } finally {
-                setloading(false);
+            });
+            let json: ResultDataType<T> = res.data;
+            if (json.code === 200) {
+                setRes(json.data);
+            } else {
+                throw new Error(json.msg);
             }
+        } catch (err) {
+            setErr(err);
+        } finally {
+            setloading(false);
         }
-        load();
-    }, [options]);
-
-    return {
-        data: res,
-        error: err,
-        isLoading: isLoading
     }
+
+    useEffect(() => {
+        load();
+    }, [ops]);
+
+    return [
+        res,
+        load,
+        setOps,
+        err,
+        isLoading
+    ]
 }
 
-export function useTestFetch<T>(data: T, init: T, fail?: boolean):[T, boolean, any] {
+export function useTestFetch<T>(data: T, init: T, fail?: boolean): [T, boolean, any] {
     const [res, setRes] = useState<T>(init);
     const [err, setErr] = useState<any>();
     const [loading, setloading] = useState(false);
@@ -86,7 +98,7 @@ export function useTestFetch<T>(data: T, init: T, fail?: boolean):[T, boolean, a
                     }
                 });
                 setRes(res);
-            } catch(err) {
+            } catch (err) {
                 setErr(err);
             } finally {
                 setloading(false);

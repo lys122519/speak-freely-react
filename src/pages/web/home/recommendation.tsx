@@ -1,7 +1,7 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, List, Skeleton } from "antd";
 import React from "react";
-import { useTestFetch } from "../hooks/fetch";
+import { useTestFetch } from "../../../hooks/fetch";
 
 const data = Array.from({ length: 23 }).map((_, i) => ({
     href: 'https://ant.design',

@@ -1,14 +1,35 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import React from "react";
+import { Spin } from "antd";
 import { Routes, Route } from "react-router-dom";
-import App from "./App";
 import { UserContext, UserInfo } from "./context/user";
-import Article from "./pages/article";
-import ArtEditor from "./pages/article_editor";
-import Home from "./pages/home";
-import ModPass from "./pages/mod_pass";
-import Recommendation from "./pages/recommendation";
-import UserSpace from "./pages/space";
-import UserInfoC from "./pages/user_info";
+import MDArticle from "./pages/web/article/article";
+
+// import Article from "./pages/article";
+// import ArtEditor from "./pages/web/art_editor/article_editor";
+// import Home from "./pages/web/home/home";
+// import AcountSet from "./pages/web/personal/acount_set/acount_set";
+// import Recommendation from "./pages/web/home/recommendation";
+// import Personal from "./pages/web/personal/personal";
+// import UserInfoC from "./pages/web/personal/userinfo/user_info";
+// import ArticleSet from "./pages/web/personal/content_set/article_set/article_set";
+// import AdminIndex from "./pages/admin";
+// import ArtAdmin from "./pages/admin/content/article";
+// import UserAdmin from "./pages/admin/content/user";
+const App = React.lazy(() => import('./App'));
+const ServerDataIndex = React.lazy(() => import('./pages/admin/content/site_data/server_data'));
+const Article = React.lazy(() => import('./pages/article'));
+const ArtEditor = React.lazy(() => import('./pages/web/art_editor/article_editor'));
+const Home = React.lazy(() => import('./pages/web/home/home'));
+const AcountSet = React.lazy(() => import('./pages/web/personal/acount_set/acount_set'));
+const Recommendation = React.lazy(() => import('./pages/web/home/recommendation'));
+const Personal = React.lazy(() => import('./pages/web/personal/personal'));
+const UserInfoC = React.lazy(() => import('./pages/web/personal/userinfo/user_info'));
+const ArticleSet = React.lazy(() => import('./pages/web/personal/content_set/article_set/article_set'));
+const AdminIndex = React.lazy(() => import('./pages/admin'));
+const ArtAdmin = React.lazy(() => import('./pages/admin/content/article'));
+const UserAdmin = React.lazy(() => import('./pages/admin/content/user'));
+
 
 const Routers: React.FC<any> = () => {
     const [user, setUser] = useState<UserInfo>();
@@ -21,30 +42,73 @@ const Routers: React.FC<any> = () => {
         }
     }, []);
     useEffect(() => {
-        if(user) {
+        if (user) {
             sessionStorage.setItem("user", JSON.stringify(user));
         }
     }, [user])
     return (
-        <UserContext.Provider value={{userinfo: user, setUser: setUser}}>
+        <UserContext.Provider value={{ userinfo: user, setUser: setUser }}>
             <Routes>
                 <Route path="/">
-                    <Route path="h/*" element={<App />}>
-                        <Route path="home/*" element={<Home />}>
-                            <Route path="recommendation" element={<Recommendation />}></Route>
+                    <Route path="h/*" element={<Lazy render={<App />} />}>
+                        <Route path="home/*" element={<Lazy render={<Home />} />}>
+                            <Route path="recommendation" element={<Lazy render={<Recommendation />} />}></Route>
                         </Route>
-                        <Route path="articles" element={<Article />} />
-                    </Route>
-                    <Route path="space/*">
-                        <Route path=":userId/*" element={<UserSpace />}>
-                            <Route path="mod-pass" element={<ModPass />}></Route>
-                            <Route path="base-info" element={<UserInfoC />}></Route>
+                        <Route path="articles" element={<Lazy render={<Article />} />} />
+                        <Route path="personal/*" element={<Lazy render={<Personal />} />}>
+                            <Route path="acount-set" element={<Lazy render={<AcountSet />} />}></Route>
+                            <Route path="base-info" element={<Lazy render={<UserInfoC />} />}></Route>
+                            <Route path="article-set" element={<Lazy render={<ArticleSet />} />} />
+                        </Route>
+                        <Route path="editor" element={<Lazy render={<ArtEditor />} />} >
+                            <Route path=":articleId"></Route>
+                        </Route>
+                        <Route path="article" element={<Lazy render={<MDArticle />} />}>
+                            <Route path=":articleId"></Route>
                         </Route>
                     </Route>
-                    <Route path="editor" element={<ArtEditor />} />
+
+                </Route>
+                <Route path="admin/*" element={<Lazy render={<AdminIndex />} />}>
+                    <Route path="article" element={<Lazy render={<ArtAdmin />} />}></Route>
+                    <Route path="report"></Route>
+                    <Route path="server-data" element={<Lazy render={<ServerDataIndex />} />}></Route>
+                    <Route path="user" element={<Lazy render={<UserAdmin />} />}></Route>
                 </Route>
             </Routes>
         </UserContext.Provider>
+    )
+}
+
+interface LazyProps {
+    render: React.ReactNode
+}
+
+const Lazy: React.FC<LazyProps> = (props) => {
+
+    const [show, setShow] = useState<boolean>(false);
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setShow(true);
+            // 延迟时间可自己拿捏
+        }, 500);
+
+        return () => {
+            clearTimeout(id);
+        };
+    }, []);
+
+
+    return (
+        <Suspense
+            fallback={
+                show ? <div style={{ width: "100%", height: "100%", minHeight: 300, display: "flex", justifyContent: "center", alignItems: "center", background: "#fff" }}>
+                    <Spin size="large" tip="正在加载组件..." />
+                </div> : null
+            }
+        >
+            {props.render}
+        </Suspense>
     )
 }
 

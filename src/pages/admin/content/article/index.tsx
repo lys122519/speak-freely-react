@@ -8,6 +8,7 @@ import { UserContext } from "../../../../context/user";
 import { useFetch } from "../../../../hooks/fetch";
 import req from "../../../../request";
 import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
+import ArtStatusText from "./status_text";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -47,7 +48,7 @@ const ArtAdmin = () => {
             dataIndex: 'enabled',
             key: 'enabled',
             render: (enabled) => {
-                return <Text style={{ color: "green" }}><CheckCircleOutlined />{enabled}</Text>
+                return <ArtStatusText status={enabled} />
             }
         },
         {

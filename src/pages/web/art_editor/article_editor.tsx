@@ -11,15 +11,16 @@ import { useFetch } from '../../../hooks/fetch';
 
 const ArtEditor: React.FC = (props) => {
     const { articleId } = useParams();
+    const [saveId, setSaveId] = useState(articleId);
     const [editorValue, setEditorValue] = useState("");
     const { userinfo } = useContext(UserContext);
     const [ModalLoading, setModalLoading] = useState(false);
     const [title, setTitle] = useState("");
     const [tags, setTags] = useState<TagData[]>([]);
-    const [art] = useFetch<{content: string, tags: TagData[], name:string}>({
+    const [art] = useFetch<{content: string, tags: TagData[], name:string}>(articleId ? {
         path: `/article/${articleId}`,
         token: userinfo?.token
-    }, {content: "", tags: [], name: ""});
+    } : {}, {content: "", tags: [], name: ""});
 
     useEffect(() => {
         setEditorValue(art.content);
@@ -66,7 +67,7 @@ const ArtEditor: React.FC = (props) => {
         setModalLoading(true);
         try {
             let res = await req({
-                url: config.host + "/files/upload",
+                url: config.host + "/article/action/publish",
                 headers: {
                     token: userinfo ? userinfo.token : ''
                 },
@@ -74,11 +75,23 @@ const ArtEditor: React.FC = (props) => {
                 data: {
                     content: editorValue,
                     name: title,
-                    tags: tags
+                    tags: tags.map((item) => {
+                        if(typeof item.id === 'number') {
+                            return {
+                                id: item.id,
+                            }
+                        } else {
+                            return {
+                                content: item.content
+                            }
+                        }
+                    }),
+                    id: saveId ? parseInt(saveId) : null
                 },
             });
             if (res.data.code === 200) {
                 message.success("发布成功");
+                setSaveId(res.data.data.id);
             } else {
                 message.error(res.data.msg)
             }
@@ -118,11 +131,12 @@ const ArtEditor: React.FC = (props) => {
                             }
                         }
                     }),
-                    id: articleId ? parseInt(articleId) : null
+                    id: saveId ? parseInt(saveId) : null
                 },
             });
             if (res.data.code === 200) {
                 message.success("保存成功");
+                setSaveId(res.data.data.id);
             } else {
                 message.error(res.data.msg)
             }
@@ -188,7 +202,11 @@ const ArtEditor: React.FC = (props) => {
                         <ArticleSet
                             onConfirm={(tags, type) => {
                                 if(type === "save") {
-                                    onSave(tags);
+                                    return onSave(tags);
+                                } else if(type === "public") {
+                                    return onPublic(tags);
+                                } else {
+                                    return Promise.resolve();
                                 }
                             }}
                             loading={ModalLoading}
@@ -205,7 +223,7 @@ const ArtEditor: React.FC = (props) => {
 }
 
 interface ArticleSetProps {
-    onConfirm: (formFileds: any, actionType: "save" | "public" | undefined) => void
+    onConfirm: (formFileds: any, actionType: "save" | "public" | "set" | undefined) => void
     loading: boolean
     onChange: (tags: TagData[]) => void
     tags: TagData[]
@@ -220,7 +238,7 @@ const ArticleSet: React.FC<ArticleSetProps> = (props) => {
     const { userinfo } = useContext(UserContext);
     const [modalVisible, setModalVisible] = useState(false);
     const tags = props.tags;
-    const [type, setType] = useState<"save" | "public" | undefined>();
+    const [type, setType] = useState<"save" | "public" | "set" | undefined>();
     const [hotTagsRes] = useFetch<any>({
         path: "/tags/top100",
         token: userinfo?.token
@@ -237,9 +255,14 @@ const ArticleSet: React.FC<ArticleSetProps> = (props) => {
         <>
             <Row justify='end' gutter={10}>
                 <Col>
-                    <Button onClick={() => {
+                    <Button type="link" onClick={() => {
                         setModalVisible(true);
-                        setType("save");
+                        setType("set");
+                    }}>文章设置</Button>
+                </Col>
+                <Col>
+                    <Button loading={props.loading} onClick={() => {
+                        props.onConfirm(tags, "save");
                     }}>保存</Button>
                 </Col>
                 <Col>
@@ -256,7 +279,7 @@ const ArticleSet: React.FC<ArticleSetProps> = (props) => {
                     (
                         <>
                             <Button onClick={() => setModalVisible(false)}>取消</Button>
-                            <Button type='primary' loading={props.loading} onClick={() => { props.onConfirm(tags, type) }}>确定</Button>
+                            <Button type='primary' loading={props.loading} onClick={async () => { await props.onConfirm(tags, type); setModalVisible(false) }}>确定</Button>
                         </>
                     )
                 }

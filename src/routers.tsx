@@ -3,6 +3,7 @@ import React from "react";
 import { Spin } from "antd";
 import { Routes, Route } from "react-router-dom";
 import { UserContext, UserInfo } from "./context/user";
+import { UserRole } from "./types/user";
 //import SearchResult from "./pages/web/search_result/result";
 // import Article from "./pages/article";
 // import ArtEditor from "./pages/web/art_editor/article_editor";
@@ -71,12 +72,13 @@ const Routers: React.FC<any> = () => {
                     </Route>
 
                 </Route>
-                <Route path="admin/*" element={<Lazy render={<AdminIndex />} />}>
+                {user?.role === "ROLE_ADMIN" ? <Route path="admin/*" element={<Lazy render={<AdminIndex />} />}>
                     <Route path="article" element={<Lazy render={<ArtAdmin />} />}></Route>
                     <Route path="report"></Route>
                     <Route path="server-data" element={<Lazy render={<ServerDataIndex />} />}></Route>
                     <Route path="user" element={<Lazy render={<UserAdmin />} />}></Route>
-                </Route>
+                </Route> : null}
+                
             </Routes>
         </UserContext.Provider>
     )

@@ -29,8 +29,8 @@ type FetchResult<T> = [
     error?: any
 ]
 
-interface FetchOptions {
-    path: string
+export interface FetchOptions {
+    path?: string
     data?: any
     token?: string
 }
@@ -45,11 +45,11 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
         setloading(true);
         try {
             let res = await req({
-                url: config.host + ops.path,
+                url: config.host + ops?.path,
                 method: "GET",
-                params: ops.data,
+                params: ops?.data,
                 headers: {
-                    token: ops.token ?? ""
+                    token: ops?.token ?? ""
                 }
             });
             let json: ResultDataType<T> = res.data;
@@ -66,7 +66,9 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
     }
 
     useEffect(() => {
-        load();
+        if(ops.path) {
+            load();
+        }
     }, [ops]);
 
     return [

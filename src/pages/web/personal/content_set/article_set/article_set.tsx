@@ -1,10 +1,10 @@
 import { CommentOutlined, EyeOutlined, LikeOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, Card, Col, List, message, Modal, Row, Segmented, Space, Tag, Typography } from "antd";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import config from "../../../../../config";
 import { UserContext } from "../../../../../context/user";
-import { useFetch } from "../../../../../hooks/fetch";
+import { FetchOptions, useFetch } from "../../../../../hooks/fetch";
 import req from "../../../../../request";
 import "./article_set.less"
 
@@ -19,7 +19,7 @@ type ArticleData = {
     userid: string
 }
 
-type fetchResponseData = {
+export type fetchResponseData = {
     currents: number
     pages: number
     records: ArticleData[]
@@ -27,28 +27,37 @@ type fetchResponseData = {
     total: number
 }
 
+enum articleType {
+    "全部" = "all",
+    "草稿" = "draft",
+    "已发布" = "publish"
+}
+
 const ArticleSet: React.FC = () => {
-    const [page, setPage] = useState(1);
-    const { userinfo } = useContext(UserContext);
     const pageSize = 6;
-    const [res, refresh, _, err, isLoading] = useFetch<fetchResponseData | undefined>({
-        path: "/article/page",
-        token: userinfo?.token,
-        data: {
-            pageNum: page,
-            pageSize: pageSize
-        }
-    }, undefined);
+    const { userinfo } = useContext(UserContext);
+    const [type, setType] = useState("all");
+    const [page, setPage] = useState(1);
+    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+
+    useEffect(() => {
+        setOps({
+            path: `/article/self/${type}/${page}/${pageSize}`,
+            token: userinfo?.token
+        });
+    }, [type, page])
 
     return (
         <>
             <Card>
-                <Segmented options={['全部', '草稿', '已发布']} />
+                <Segmented onChange={(value) => {
+                    setType((articleType as any)[value])
+                }} options={['全部', '草稿', '已发布']} />
                 <List
                     dataSource={res?.records ?? []}
                     pagination={{
                         position: "bottom",
-                        total: 20,
+                        total: res?.total,
                         pageSize: pageSize,
                         onChange: (p) => {
                             setPage(p)

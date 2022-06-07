@@ -2,7 +2,11 @@ import { CheckCircleOutlined, DeleteOutlined, PauseOutlined } from "@ant-design/
 import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import config from "../../../../config";
+import { UserContext } from "../../../../context/user";
+import { FetchOptions, useFetch } from "../../../../hooks/fetch";
+import { UserData, UserRole, UserRoleIndex } from "../../../../types/user";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -21,8 +25,11 @@ const columns: ColumnsType<any> = [
     },
     {
         title: '身份',
-        dataIndex: 'level',
-        key: 'level',
+        dataIndex: 'role',
+        key: 'role',
+        render: (role: string) => {
+            return UserRole[role as UserRoleIndex]
+        }
     },
     {
         title: '状态',
@@ -40,14 +47,37 @@ const columns: ColumnsType<any> = [
             return <>
                 <Button type="link" style={{padding: 0}}><PauseOutlined /></Button>
                 <Button type="link" style={{padding: 0}}></Button>
-                <Button type="link" style={{padding: 0}} danger><DeleteOutlined /></Button>
             </>
         }
     },
 ];
 
+type fetchResponseData = {
+    currents: number;
+    pages: number;
+    records: UserData[];
+    size: number;
+    total: number;
+}
+
 
 const UserAdmin = () => {
+    const { userinfo } = useContext(UserContext);
+    const [page, setPage] = useState(1);
+    const [type, setType] = useState("all");
+    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+
+    useEffect(() => {
+        setOps({
+            path: `/user/page`,
+            data: {
+                pageNum: page,
+                pageSize: 8
+            },
+            token: userinfo?.token
+        });
+    }, [page, type])
+
     return (
         <>
             <Space size={10} direction="vertical" style={{ width: "100%" }} >
@@ -56,10 +86,11 @@ const UserAdmin = () => {
                     onChange={(f) => { console.log(f) }}
                 />
                 <Table
-                    dataSource={users}
+                    dataSource={res?.records}
                     columns={columns}
                     pagination={{
-                        pageSize: 8
+                        pageSize: 8,
+                        total: res?.total
                     }}
                 ></Table>
             </Space>

@@ -1,8 +1,13 @@
 import { CheckCircleOutlined, DeleteOutlined, PauseOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Select, Space, Table, Typography, Input } from "antd";
+import { Button, Card, Form, Select, Space, Table, Typography, Input, Modal, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import config from "../../../../config";
+import { UserContext } from "../../../../context/user";
+import { FetchOptions, useFetch } from "../../../../hooks/fetch";
+import req from "../../../../request";
+import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -12,50 +17,80 @@ const arts = new Array(15).fill({
     status: "已发布",
 });
 
-const columns: ColumnsType<any> = [
-    {
-        title: '标题',
-        dataIndex: 'title',
-        key: 'title',
-    },
-    {
-        title: '状态',
-        dataIndex: 'status',
-        key: 'status',
-        render: (status) => {
-            return <Text style={{ color: "green" }}><CheckCircleOutlined />{status}</Text>
-        }
-    },
-    {
-        title: '操作',
-        dataIndex: 'action',
-        key: 'action',
-        render: () => {
-            return <>
-                <Button type="link" style={{ padding: 0 }}><PauseOutlined /></Button>
-                <Button type="link" style={{ padding: 0 }}></Button>
-                <Button type="link" style={{ padding: 0 }} danger><DeleteOutlined /></Button>
-            </>
-        }
-    },
-];
+type ArtType = {
+    name: string
+    authorNickname: string
+    enabled: string
+    time: string
+}
 
 
 const ArtAdmin = () => {
+    const { userinfo } = useContext(UserContext);
+    const [page, setPage] = useState(1);
+    const [type, setType] = useState("all");
+    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+
+    const columns: ColumnsType<any> = [
+        {
+            title: '标题',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: "作者",
+            dataIndex: "authorNickname",
+            key: "authorNickname"
+        },
+        {
+            title: '状态',
+            dataIndex: 'enabled',
+            key: 'enabled',
+            render: (enabled) => {
+                return <Text style={{ color: "green" }}><CheckCircleOutlined />{enabled}</Text>
+            }
+        },
+        {
+            title: "时间",
+            dataIndex: "time",
+            key: "time"
+        },
+        {
+            title: '操作',
+            dataIndex: 'action',
+            key: 'action',
+            render: (_, item) => {
+                return <>
+                    <Button type="link" style={{ padding: 0 }}><PauseOutlined /></Button>
+                    <Button type="link" style={{ padding: 0 }}></Button>
+                    <DeleteModal id={item.id} onFinish={() => {refresh()}} />
+                </>
+            }
+        },
+    ];
+
+    useEffect(() => {
+        setOps({
+            path: `/article/${type}/${page}/8`,
+            token: userinfo?.token
+        });
+    }, [page, type])
 
     return (
         <>
             <Space size={10} direction="vertical" style={{ width: "100%" }} >
                 <TableControlForm
-                    fieldValue={{ status: "lock" }}
-                    onChange={(f) => { console.log(f) }}
+                    fieldValue={{ status: type }}
+                    onChange={(f) => { setType(f.status ?? "all") }}
                 />
                 <Table
-                    dataSource={arts}
+                    dataSource={res?.records}
                     columns={columns}
                     pagination={{
-                        pageSize: 8
+                        pageSize: 8,
+                        total: res?.total
                     }}
+                    rowKey={(item) => item.id}
                 ></Table>
             </Space>
         </>
@@ -85,7 +120,7 @@ const TableControlForm: React.FC<TableControlFormProps> = (props) => {
                 layout="inline"
                 form={form}
                 onValuesChange={(v) => {
-                    if(props.onChange) {
+                    if (props.onChange) {
                         props.onChange(form.getFieldsValue());
                     }
                 }}
@@ -95,7 +130,9 @@ const TableControlForm: React.FC<TableControlFormProps> = (props) => {
                     label="状态"
                 >
                     <Select style={{ width: 120 }}>
-                        <Option value="pubulic">已发布</Option>
+                        <Option value="all">全部</Option>
+                        <Option value="publish">已发布</Option>
+                        <Option value="draft">未发布</Option>
                         <Option value="lock">已锁定</Option>
                     </Select>
                 </Form.Item>
@@ -110,6 +147,63 @@ const TableControlForm: React.FC<TableControlFormProps> = (props) => {
                 </Form.Item>
             </Form>
         </Card>
+    )
+}
+
+interface DeleteModalProps {
+    id: number,
+    onFinish?: () => void
+}
+
+const DeleteModal: React.FC<DeleteModalProps> = (props) => {
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { userinfo } = useContext(UserContext);
+
+    const onDelete = async () => {
+        setLoading(true);
+        try {
+            let res = await req({
+                url: config.host + `/article/${props.id}`,
+                method: "DELETE",
+                headers: {
+                    token: userinfo?.token ?? ""
+                }
+            });
+            if (res.data.code === 200) {
+                message.success("操作成功");
+                setVisible(false);
+                if(props.onFinish) {
+                    props.onFinish();
+                }
+            } else {
+                message.error(res.data.msg)
+            }
+        } catch (err) {
+            console.log(err);
+            message.error("出现异常，详见控制台");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    return (
+        <>
+            <Button type="link" style={{ padding: 0 }} danger onClick={() => setVisible(true)}><DeleteOutlined /></Button>
+            <Modal
+                title="提示"
+                onCancel={() => setVisible(false)}
+                footer={(
+                    <>
+                        <Button onClick={() => setVisible(false)}>取消</Button>
+                        <Button type="primary" loading={loading} onClick={onDelete} >确定</Button>
+                    </>
+                )}
+                visible={visible}
+            >
+                确定要删除吗？
+            </Modal>
+        </>
     )
 }
 

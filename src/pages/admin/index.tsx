@@ -7,13 +7,13 @@ const { Content, Sider } = Layout;
 
 const AdminIndex: React.FC = () => {
     return <>
-        <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <Layout style={{ minHeight: "100vh", display: "flex", flexDirection: "column", minWidth: 1500 }}>
             <AdminHeader />
-            <Layout>
+            <Layout style={{minWidth: 1500}}>
                 <Sider style={{width:260}}>
                     <AdminMenu />
                 </Sider>
-                <Content style={{padding: 10, minWidth: 1500}}>
+                <Content style={{padding: 10}}>
                     <Outlet />
                 </Content>
             </Layout>

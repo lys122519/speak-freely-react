@@ -1,5 +1,6 @@
 import { Card, Col, Row, Space, Statistic } from "antd"
 import FlowVariationDiagram from "./flow_variation_diagram";
+import InterfaceCountChart from "./interface";
 import TPie from "./pie";
 
 const ServerDataIndex = () => {
@@ -16,6 +17,18 @@ const ServerDataIndex = () => {
                     <Col span={18}>
                         <Card title="网站流量图">
                             <FlowVariationDiagram />
+                        </Card>
+                    </Col>
+                    <Col span={6}>
+                        <Card title="待定" style={{ width: "100%", height: "100%" }}>
+                            <TPie />
+                        </Card>
+                    </Col>
+                </Row>
+                <Row gutter={10} align="stretch">
+                    <Col span={18}>
+                        <Card title="接口请求情况">
+                            <InterfaceCountChart />
                         </Card>
                     </Col>
                     <Col span={6}>

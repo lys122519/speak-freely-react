@@ -1,7 +1,7 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, Card, Col, List, Row, Skeleton } from "antd";
 import { useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useTestFetch } from "../../../hooks/fetch";
 
 const SearchResult: React.FC = () => {

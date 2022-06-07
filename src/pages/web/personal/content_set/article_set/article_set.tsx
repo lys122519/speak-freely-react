@@ -1,10 +1,10 @@
 import { CommentOutlined, EyeOutlined, LikeOutlined, StarOutlined } from "@ant-design/icons";
-import { Button, Card, Col, List, message, Modal, Row, Segmented, Space, Tag, Typography } from "antd";
+import { Button, Card, Col, List, message, Modal, Row, Segmented, Tag, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import config from "../../../../../config";
 import { UserContext } from "../../../../../context/user";
-import { FetchOptions, useFetch } from "../../../../../hooks/fetch";
+import { useFetch } from "../../../../../hooks/fetch";
 import req from "../../../../../request";
 import "./article_set.less"
 
@@ -16,7 +16,8 @@ type ArticleData = {
     name: string,
     time: string,
     username: string,
-    userid: string
+    userid: string,
+    enabled: string
 }
 
 export type fetchResponseData = {
@@ -39,6 +40,8 @@ const ArticleSet: React.FC = () => {
     const [type, setType] = useState("all");
     const [page, setPage] = useState(1);
     const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+
+    console.log(err);
 
     useEffect(() => {
         setOps({
@@ -72,7 +75,7 @@ const ArticleSet: React.FC = () => {
                                     <Row justify="space-between">
                                         <Col>
                                             <Row align="middle">
-                                                <Col><Tag color="orange">草稿</Tag></Col>
+                                                {item.enabled === "未启用" ? <Col><Tag color="orange">草稿</Tag></Col> : null}
                                                 <Col><Title style={{ cursor: "pointer" }} level={4}>{item.name}</Title></Col>
                                             </Row>
                                         </Col>

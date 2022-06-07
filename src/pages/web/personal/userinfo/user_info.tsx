@@ -1,5 +1,5 @@
-import { LoadingOutlined, PlusOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Button, Card, Col, Form, Input, message, PageHeader, Row, Upload, Typography } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { Avatar, Button, Card, Col, Form, Input, message, Row, Upload, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { RcFile, UploadChangeParam, UploadProps } from "antd/lib/upload";
 import { UploadFile } from "antd/lib/upload/interface";
@@ -10,14 +10,14 @@ import req from "../../../../request";
 import "./user_info.less";
 
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const UserInfo: React.FC = () => {
     const [baseInfoForm] = useForm();
     const { userinfo, setUser } = useContext(UserContext);
 
     const [baseInfoStatus, setBaseInfoStatus] = useState(false);
-    const [avatarLoading, setAvatarLoading] = useState(false);
+    // const [avatarLoading, setAvatarLoading] = useState(false);
 
     const [baseLoading, setBaseLoading] = useState(false);
 
@@ -78,7 +78,7 @@ const UserInfo: React.FC = () => {
     const handleChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile>) => {
         
         if (info.file.status === 'uploading') {
-            setAvatarLoading(true);
+            //setAvatarLoading(true);
             return;
         }
         if (info.file.status === 'done' && info.file.response.code === 200) {
@@ -107,12 +107,12 @@ const UserInfo: React.FC = () => {
                 } else {
                     message.error(res.data.msg);
                 }
-                setAvatarLoading(false);
+                //setAvatarLoading(false);
             }
             mod();
         }
         if (info.file.status === "error") {
-            setAvatarLoading(false);
+            //setAvatarLoading(false);
             message.error("上传失败,请稍后重试");
         }
         if(info.file.response.code !== 200 && info.file.response.msg) {

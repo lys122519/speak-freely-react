@@ -1,10 +1,9 @@
-import { Layout, PageHeader } from "antd";
+import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 import "./personal.less";
 import UserSpaceMenu from "./user_space_menu";
-import UserSpaceCard from "../../user_space_card";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 
 const Personal: React.FC = () => {
     return (

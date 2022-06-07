@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Editor from 'for-editor'
-import { BackTop, Button, Card, Col, Form, Input, InputRef, message, Modal, Row, Tag, Tooltip } from 'antd';
+import { Button, Card, Col, Form, Input, InputRef, message, Modal, Row, Tag, Tooltip } from 'antd';
 import "./article_editor.less"
 import req from '../../../request';
 import config from '../../../config';

@@ -5,7 +5,7 @@ import { EditOutlined, PoweroffOutlined, SettingOutlined, UserOutlined } from "@
 import "./header.less";
 import Register from "./rigister";
 import Login from "./loginform";
-import { UserContext, UserInfo } from "../../../context/user";
+import { UserContext } from "../../../context/user";
 import { Link } from "react-router-dom";
 import Search from "./search";
 

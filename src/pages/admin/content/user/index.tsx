@@ -1,21 +1,20 @@
-import { CheckCircleOutlined, DeleteOutlined, PauseOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, PauseOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
 import { useContext, useEffect, useState } from "react";
-import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
-import { FetchOptions, useFetch } from "../../../../hooks/fetch";
+import { useFetch } from "../../../../hooks/fetch";
 import { UserData, UserRole, UserRoleIndex } from "../../../../types/user";
 
 const { Text } = Typography;
 const { Option } = Select;
 
-const users = new Array(15).fill({
-    username: "用户名",
-    status: "正常",
-    level: "管理员"
-});
+// const users = new Array(15).fill({
+//     username: "用户名",
+//     status: "正常",
+//     level: "管理员"
+// });
 
 const columns: ColumnsType<any> = [
     {

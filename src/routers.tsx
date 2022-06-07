@@ -1,9 +1,8 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import React from "react";
 import { Spin } from "antd";
 import { Routes, Route } from "react-router-dom";
 import { UserContext, UserInfo } from "./context/user";
-import { UserRole } from "./types/user";
 //import SearchResult from "./pages/web/search_result/result";
 // import Article from "./pages/article";
 // import ArtEditor from "./pages/web/art_editor/article_editor";
@@ -20,6 +19,7 @@ const SearchResult = React.lazy(() => import('./pages/web/search_result/result')
 const MDArticle = React.lazy(() => import('./pages/web/article/article'));
 const App = React.lazy(() => import('./App'));
 const ServerDataIndex = React.lazy(() => import('./pages/admin/content/site_data/server_data'));
+
 const Article = React.lazy(() => import('./pages/article'));
 const ArtEditor = React.lazy(() => import('./pages/web/art_editor/article_editor'));
 const Home = React.lazy(() => import('./pages/web/home/home'));

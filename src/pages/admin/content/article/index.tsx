@@ -5,7 +5,7 @@ import { ColumnsType } from "antd/lib/table";
 import { useContext, useEffect, useState } from "react";
 import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
-import { FetchOptions, useFetch } from "../../../../hooks/fetch";
+import { useFetch } from "../../../../hooks/fetch";
 import req from "../../../../request";
 import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
 

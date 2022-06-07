@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react';
 import { Pie, measureTextWidth } from '@ant-design/plots';
 
 const TPie:React.FC = () => {

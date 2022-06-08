@@ -9,6 +9,7 @@ export type UserData = {
     phone: string
     sex: string
     username: string
+    email: string
 }
 
 export enum UserRole {

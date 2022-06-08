@@ -6,55 +6,30 @@ import config from "../../../../../config";
 import { UserContext } from "../../../../../context/user";
 import { useFetch } from "../../../../../hooks/fetch";
 import req from "../../../../../request";
+import { ArticleDataFetchResponseData, ArticleType, articleTypeIndex } from "../../../../../types/article";
 import "./article_set.less"
 
 const { Title, Text } = Typography;
 
-type ArticleData = {
-    content: string
-    id: number,
-    name: string,
-    time: string,
-    username: string,
-    userid: string,
-    enabled: string
-}
-
-export type fetchResponseData = {
-    currents: number
-    pages: number
-    records: ArticleData[]
-    size: number
-    total: number
-}
-
-enum articleType {
-    "全部" = "all",
-    "草稿" = "draft",
-    "已发布" = "publish"
-}
-
 const ArticleSet: React.FC = () => {
     const pageSize = 6;
-    const { userinfo } = useContext(UserContext);
     const [type, setType] = useState("all");
     const [page, setPage] = useState(1);
-    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+    const [res, refresh, setOps, err, isLoading] = useFetch<ArticleDataFetchResponseData | undefined>({}, undefined);
 
     console.log(err);
 
     useEffect(() => {
         setOps({
             path: `/article/self/${type}/${page}/${pageSize}`,
-            token: userinfo?.token
         });
-    }, [type, page])
+    }, [type, page, setOps])
 
     return (
         <>
             <Card>
                 <Segmented onChange={(value) => {
-                    setType((articleType as any)[value])
+                    setType(ArticleType[value as articleTypeIndex])
                 }} options={['全部', '草稿', '已发布']} />
                 <List
                     dataSource={res?.records ?? []}

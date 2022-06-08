@@ -2,13 +2,10 @@ import { useContext } from 'react';
 import { Line } from '@ant-design/plots';
 import { Datum, LineConfig } from '@ant-design/charts';
 import { useFetch } from '../../../../../hooks/fetch';
-import { UserContext } from '../../../../../context/user';
 
 const FlowVariationDiagram = () => {
-  const { userinfo } = useContext(UserContext);
   const [data] = useFetch<number[]>({
     path: "/data/activeUserCountByHour",
-    token: userinfo?.token
   }, []);
   let max = 0;
   let chartData = data.map((item, index) => {

@@ -1,5 +1,5 @@
-import { CheckCircleOutlined, DeleteOutlined, PauseOutlined } from "@ant-design/icons";
-import { Button, Card, Form, Select, Space, Table, Typography, Input, Modal, message } from "antd";
+import {  DeleteOutlined, PauseOutlined } from "@ant-design/icons";
+import { Button, Card, Form, Select, Space, Table, Input, Modal, message } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
 import { useContext, useEffect, useState } from "react";
@@ -7,30 +7,15 @@ import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
 import { useFetch } from "../../../../hooks/fetch";
 import req from "../../../../request";
-import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
+import { ArticleDataFetchResponseData } from "../../../../types/article";
 import ArtStatusText from "./status_text";
 
-const { Text } = Typography;
 const { Option } = Select;
 
-const arts = new Array(15).fill({
-    title: "文章标题",
-    status: "已发布",
-});
-
-type ArtType = {
-    name: string
-    authorNickname: string
-    enabled: string
-    time: string
-}
-
-
 const ArtAdmin = () => {
-    const { userinfo } = useContext(UserContext);
     const [page, setPage] = useState(1);
     const [type, setType] = useState("all");
-    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+    const [res, refresh, setOps, err, isLoading] = useFetch<ArticleDataFetchResponseData | undefined>({}, undefined);
 
     const columns: ColumnsType<any> = [
         {
@@ -73,7 +58,6 @@ const ArtAdmin = () => {
     useEffect(() => {
         setOps({
             path: `/article/${type}/${page}/8`,
-            token: userinfo?.token
         });
     }, [page, type])
 

@@ -1,7 +1,8 @@
 import { message } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import config from "../config";
+import { UserContext } from "../context/user";
 import req from "../request";
 
 type ResultDataType<T> = {
@@ -32,7 +33,6 @@ type FetchResult<T> = [
 export interface FetchOptions {
     path?: string
     data?: any
-    token?: string
 }
 
 export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
@@ -40,6 +40,7 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
     const [res, setRes] = useState(init);
     const [err, setErr] = useState<any>();
     const [isLoading, setloading] = useState(false);
+    const {userinfo} = useContext(UserContext);
 
     const load = async () => {
         setloading(true);
@@ -49,7 +50,7 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
                 method: "GET",
                 params: ops?.data,
                 headers: {
-                    token: ops?.token ?? ""
+                    token: userinfo?.token ?? ""
                 }
             });
             let json: ResultDataType<T> = res.data;
@@ -69,7 +70,7 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
         if(ops.path) {
             load();
         }
-    }, [ops]);
+    }, [ops, userinfo]);
 
     return [
         res,

@@ -2,8 +2,7 @@ import { CheckCircleOutlined, PauseOutlined } from "@ant-design/icons";
 import { Button, Card, Form, Input, Select, Space, Table, Typography } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../../../context/user";
+import { useEffect, useState } from "react";
 import { useFetch } from "../../../../hooks/fetch";
 import { UserData, UserRole, UserRoleIndex } from "../../../../types/user";
 
@@ -61,10 +60,9 @@ type fetchResponseData = {
 
 
 const UserAdmin = () => {
-    const { userinfo } = useContext(UserContext);
-    const [page, setPage] = useState(1);
-    const [type, setType] = useState("all");
-    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+    const [page, ] = useState(1);
+    const [type, ] = useState("all");
+    const [res, , setOps, , ] = useFetch<fetchResponseData | undefined>({}, undefined);
 
     useEffect(() => {
         setOps({
@@ -73,9 +71,8 @@ const UserAdmin = () => {
                 pageNum: page,
                 pageSize: 8
             },
-            token: userinfo?.token
         });
-    }, [page, type])
+    }, [page, type, setOps])
 
     return (
         <>

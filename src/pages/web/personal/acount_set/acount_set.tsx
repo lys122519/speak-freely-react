@@ -93,7 +93,6 @@ const AcountSet: React.FC = () => {
                     name="mod-pass"
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 10 }}
-                    size="large"
                     style={{ paddingTop: 0 }}
                 >
                     <Form.Item

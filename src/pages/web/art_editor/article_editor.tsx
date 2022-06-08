@@ -19,7 +19,6 @@ const ArtEditor: React.FC = (props) => {
     const [tags, setTags] = useState<TagData[]>([]);
     const [art] = useFetch<{content: string, tags: TagData[], name:string}>(articleId ? {
         path: `/article/${articleId}`,
-        token: userinfo?.token
     } : {}, {content: "", tags: [], name: ""});
 
     useEffect(() => {
@@ -235,13 +234,11 @@ export type TagData = {
 }
 
 const ArticleSet: React.FC<ArticleSetProps> = (props) => {
-    const { userinfo } = useContext(UserContext);
     const [modalVisible, setModalVisible] = useState(false);
     const tags = props.tags;
     const [type, setType] = useState<"save" | "public" | "set" | undefined>();
     const [hotTagsRes] = useFetch<any>({
         path: "/tags/top100",
-        token: userinfo?.token
     }, []);
 
     let hotTags: TagData[] = [];

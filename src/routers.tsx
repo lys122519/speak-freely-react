@@ -15,6 +15,7 @@ import { UserContext, UserInfo } from "./context/user";
 // import AdminIndex from "./pages/admin";
 // import ArtAdmin from "./pages/admin/content/article";
 // import UserAdmin from "./pages/admin/content/user";
+const UserSpace = React.lazy(() => import('./pages/web/space/space'));
 const SearchResult = React.lazy(() => import('./pages/web/search_result/result'));
 const MDArticle = React.lazy(() => import('./pages/web/article/article'));
 const App = React.lazy(() => import('./App'));
@@ -56,19 +57,28 @@ const Routers: React.FC<any> = () => {
                         <Route path="home/*" element={<Lazy render={<Home />} />}>
                             <Route path="recommendation" element={<Lazy render={<Recommendation />} />}></Route>
                         </Route>
+
                         <Route path="articles" element={<Lazy render={<Article />} />} />
+
                         <Route path="personal/*" element={<Lazy render={<Personal />} />}>
                             <Route path="acount-set" element={<Lazy render={<AcountSet />} />}></Route>
                             <Route path="base-info" element={<Lazy render={<UserInfoC />} />}></Route>
                             <Route path="article-set" element={<Lazy render={<ArticleSet />} />} />
                         </Route>
+
                         <Route path="editor" element={<Lazy render={<ArtEditor />} />} >
                             <Route path=":articleId"></Route>
                         </Route>
+
                         <Route path="article" element={<Lazy render={<MDArticle />} />}>
                             <Route path=":articleId"></Route>
                         </Route>
+
                         <Route path="search" element={<Lazy render={<SearchResult />} />}></Route>
+
+                        <Route path="space" element={<Lazy render={<UserSpace />} />}>
+                            <Route path=":userId"></Route>
+                        </Route>
                     </Route>
 
                 </Route>

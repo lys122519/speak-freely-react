@@ -1,15 +1,12 @@
 import { AutoComplete, Input, Tag } from "antd";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../../../context/user";
 import { useFetch } from "../../../hooks/fetch";
 import { TagData } from "../art_editor/article_editor";
 
 const Search: React.FC = () => {
-    const {userinfo} = useContext(UserContext);
     const [hotTagsRes] = useFetch<any>({
         path: "/tags/top100",
-        token: userinfo?.token
     }, []);
     const [value, setValue] = useState("");
     const [select, setSelect] = useState<TagData | undefined>(undefined);
@@ -22,7 +19,7 @@ const Search: React.FC = () => {
         if(select || value) {
             nav(`/h/search?${select ? `tag=${select.id}&` : ""}search=${select ? "" : value}`);
         }
-    }, [select]);
+    }, [select, nav]);
 
     let hotTags: TagData[] = [];
 

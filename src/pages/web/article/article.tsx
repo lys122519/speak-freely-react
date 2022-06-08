@@ -1,10 +1,8 @@
 import { Card, Col, Row, Typography } from "antd";
-import { useContext } from "react";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import remarkToc from "remark-toc";
-import { UserContext } from "../../../context/user";
 import { useFetch } from "../../../hooks/fetch";
 import { TagData } from "../art_editor/article_editor";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -14,11 +12,9 @@ import "./article.less"
 const { Title } = Typography;
 
 const MDArticle: React.FC = () => {
-    const { userinfo } = useContext(UserContext);
     const { articleId } = useParams();
     const [art] = useFetch<{ content: string, tags: TagData[], name: string }>({
         path: `/article/${articleId}`,
-        token: userinfo?.token
     }, { content: "", tags: [], name: "" });
 
     return (

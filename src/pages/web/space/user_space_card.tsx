@@ -1,14 +1,20 @@
 import { Avatar, Divider } from "antd";
 import "./user_space_card.less";
 import { UserOutlined } from "@ant-design/icons";
-import { useContext } from "react";
-import { UserContext } from "../context/user";
+import { useParams } from "react-router-dom";
+import { useFetch } from "../../../hooks/fetch";
+import { UserData } from "../../../types/user";
+
 
 interface UserSpaceCardProps {
 
 }
 const UserSpaceCard: React.FC<UserSpaceCardProps> = (props) =>{
-    const {userinfo} = useContext(UserContext);
+    const { userId } = useParams();
+
+    const [userinfo] = useFetch<UserData | undefined>({
+        path: `/user/${userId}`
+    }, undefined);
 
 
     return(
@@ -37,13 +43,6 @@ const UserSpaceCard: React.FC<UserSpaceCardProps> = (props) =>{
                     <div className="figure">0</div>
                     <div className="name">项目</div>
                 </div>
-            </div>
-            <Divider />
-            <div className="user-space-card-model2">
-                <div onClick={() => { }}>待添加</div>
-                <div onClick={() => { }}>待添加</div>
-                <div onClick={() => { }}>待添加</div>
-                <div onClick={() => { }}>待添加</div>
             </div>
         </div>
     )

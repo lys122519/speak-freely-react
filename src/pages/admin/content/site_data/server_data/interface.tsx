@@ -1,14 +1,10 @@
-import { useContext } from 'react';
 import { BarConfig } from '@ant-design/charts';
 import { useFetch } from '../../../../../hooks/fetch';
-import { UserContext } from '../../../../../context/user';
 import { Bar } from '@ant-design/plots';
 
 const InterfaceCountChart:React.FC = () => {
-    const { userinfo } = useContext(UserContext);
     const [data] = useFetch<{name: string, count: number}[]>({
         path: "/data/interface/10",
-        token: userinfo?.token
     }, [])
     let chartData = data.map((item) => {
         return {

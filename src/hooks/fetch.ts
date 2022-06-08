@@ -33,6 +33,8 @@ type FetchResult<T> = [
 export interface FetchOptions {
     path?: string
     data?: any
+    token?: string
+    method?: string
 }
 
 export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
@@ -47,8 +49,9 @@ export function useFetch<T>(options: FetchOptions, init: T): FetchResult<T> {
         try {
             let res = await req({
                 url: config.host + ops?.path,
-                method: "GET",
-                params: ops?.data,
+                method:ops.method ?? "GET",
+                params: ops.method === "GET" || !ops.method ? ops.data : undefined,
+                data: ops.method === "POST" ? ops.data : undefined,
                 headers: {
                     token: userinfo?.token ?? ""
                 }

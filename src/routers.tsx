@@ -16,6 +16,8 @@ import { UserContext, UserInfo } from "./context/user";
 // import ArtAdmin from "./pages/admin/content/article";
 // import UserAdmin from "./pages/admin/content/user";
 const UserSpace = React.lazy(() => import('./pages/web/space/space'));
+const CommentAdmin = React.lazy(() => import('./pages/admin/content/comment'));
+const ReportAdmin = React.lazy(() => import('./pages/admin/content/report'));
 const SearchResult = React.lazy(() => import('./pages/web/search_result/result'));
 const MDArticle = React.lazy(() => import('./pages/web/article/article'));
 const App = React.lazy(() => import('./App'));
@@ -84,9 +86,10 @@ const Routers: React.FC<any> = () => {
                 </Route>
                 {user?.role === "ROLE_ADMIN" ? <Route path="admin/*" element={<Lazy render={<AdminIndex />} />}>
                     <Route path="article" element={<Lazy render={<ArtAdmin />} />}></Route>
-                    <Route path="report"></Route>
                     <Route path="server-data" element={<Lazy render={<ServerDataIndex />} />}></Route>
                     <Route path="user" element={<Lazy render={<UserAdmin />} />}></Route>
+                    <Route path="report" element={<Lazy render={<ReportAdmin />} />}></Route>
+                    <Route path="comment" element={<Lazy render={<CommentAdmin />} />} />
                 </Route> : null}
                 
             </Routes>

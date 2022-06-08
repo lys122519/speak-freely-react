@@ -8,6 +8,7 @@ import { TagData } from "../art_editor/article_editor";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { duotoneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import "./article.less"
+import CommentControl from "./comment";
 
 const { Title } = Typography;
 
@@ -70,6 +71,7 @@ const MDArticle: React.FC = () => {
                         remarkPlugins={[remarkToc.bind(this, {heading: ""}), remarkGfm]}
                     />
                 </Card>
+                <CommentControl />
             </Col>
         </Row>
     )

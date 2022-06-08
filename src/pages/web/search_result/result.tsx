@@ -1,8 +1,9 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, Card, Col, List, Row, Skeleton } from "antd";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useTestFetch } from "../../../hooks/fetch";
+import { UserContext } from "../../../context/user";
+import { useFetch, useTestFetch } from "../../../hooks/fetch";
 
 const SearchResult: React.FC = () => {
     return (
@@ -31,11 +32,23 @@ const data = Array.from({ length: 23 }).map((_, i) => ({
 }));
 
 const ArtList: React.FC = () => {
-    const [listData, loading] = useTestFetch(data, []);
+    const [listData, , setOps ,loading] = useFetch<any[]>({}, []);
     const [p] = useSearchParams();
+    const [page, setPage] = useState(1);
+    const {userinfo} = useContext(UserContext);
 
     useEffect(() => {
-        console.log(p.get("tag"))
+        setOps({
+            path: `/article/search/${page}/${10}`,
+            data: {
+                searchTagID: p.get("tag"),
+                searchArticleTitle: p.get("search"),
+                page: page,
+                limit: 10 
+            },
+            method: "POST",
+            token: userinfo?.token
+        });
     }, [p])
 
     return loading

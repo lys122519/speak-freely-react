@@ -1,5 +1,5 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { Avatar, Button, List, Skeleton } from "antd";
+import { Avatar, Button, List, Skeleton, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useFetch, useTestFetch } from "../../../hooks/fetch";
@@ -41,11 +41,9 @@ const Recommendation: React.FC = () => {
             renderItem={item => (
                 <List.Item
                     key={item.id}
-                    actions={[
-                        <Button type="link" size="small" icon={<StarOutlined />} key="list-vertical-star-o">156</Button>,
-                        <Button type="link" size="small" icon={<LikeOutlined />} key="list-vertical-like-o">156</Button>,
-                        <Button type="link" size="small" icon={<MessageOutlined />} key="list-vertical-message">2</Button>,
-                    ]}
+                    actions={item.tagsID.split(";").map((tagId, index) => {
+                        return <Link key={tagId} to={`/h/search?tag=${tagId}&tag_content=${item.tagsContent.split(";")[index]}`}><Tag>{item.tagsContent.split(";")[index]}</Tag></Link>
+                    })}
                 // extra={
                 //     <img
                 //         width={272}

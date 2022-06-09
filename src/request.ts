@@ -6,7 +6,7 @@ const req = async (option: AxiosRequestConfig<any>) => {
         let user = JSON.parse(localStorage.getItem("user") ?? "null");
         let res = await request({
             ...option,
-            timeout: 5000,
+            timeout: option.timeout ?? 5000,
             headers: {
                 ...option.headers,
                 token: user ? user.token : option.headers?.token

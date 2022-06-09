@@ -44,6 +44,7 @@ const ArtEditor: React.FC = (props) => {
                 headers: {
                     token: userinfo ? userinfo.token : ''
                 },
+                timeout: 0,
                 method: "POST",
                 data: formData,
             });

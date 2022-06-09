@@ -18,7 +18,6 @@ const data = Array.from({ length: 23 }).map((_, i) => ({
 const Recommendation: React.FC = () => {
     const [page, setPage] = useState(1);
     const [arts, , setOps , , isLoading] = useFetch<ArticleDataFetchResponseData | undefined>({
-        path: `/article/top/${page}/${5}`,
     }, undefined);
 
     useEffect(() => {

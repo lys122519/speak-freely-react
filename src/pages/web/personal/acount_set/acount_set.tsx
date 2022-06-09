@@ -1,6 +1,6 @@
-import { Button, Card, Col, Form, Input, message, Row, Space } from "antd"
+import { Button, Card, Col, Form, Input, message, Modal, Row, Space } from "antd"
 import { useForm } from "antd/lib/form/Form"
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
 import req from "../../../../request";
@@ -13,7 +13,7 @@ const AcountSet: React.FC = () => {
     const [emailStatus, setEmailStatus] = useState(false);
     const [emailTime, setETime] = useState(0);
     const [emailCodeLoading, setECodeLoad] = useState(false);
-    
+
     const [emailForm] = useForm();
 
     const getECode = async () => {
@@ -210,7 +210,88 @@ const AcountSet: React.FC = () => {
                     </Form.Item>
                 </Form>
             </Card>
+            <Card title="人脸信息">
+                <UploadFace />
+            </Card>
         </Space>
+    )
+}
+
+const UploadFace: React.FC = () => {
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [video, setVideo] = useState<HTMLVideoElement>();
+    const [canvas, setCanvas] = useState<HTMLCanvasElement>();
+    const {userinfo} = useContext(UserContext);
+
+    const getEle: React.LegacyRef<HTMLVideoElement> = (e) => { if (e) { setVideo(e) } }
+    const getCanvas: React.LegacyRef<HTMLCanvasElement> = (e) => { if (e) { setCanvas(e) } }
+
+    useEffect(() => {
+        const videoPaly = async () => {
+            let streamPromise = navigator.mediaDevices.getUserMedia({ video: true });
+            if (video) {
+                video.srcObject = await streamPromise;
+                video.play();
+            }
+        }
+        if (video && visible) {
+            videoPaly();
+        }
+        if (video && !visible) {
+            const tracks = (video.srcObject as MediaStream).getTracks();
+            tracks.forEach(function (track) {
+                track.stop();
+            });
+        }
+    }, [video, visible]);
+
+    return (
+        <>
+            <Button onClick={() => setVisible(true)}>上传人脸</Button>
+            <Modal title={"上传人脸"} visible={visible} footer={[]} onCancel={setVisible.bind(this, false)}>
+                <Row justify="center">
+                    <Col>
+                        <video style={{ height: 400, width: 400 }} ref={getEle}></video>
+                    </Col>
+                </Row>
+
+                <canvas style={{ height: 0, width: 0 }} ref={getCanvas}></canvas>
+                <Row>
+                    <Col offset={2} span={20}>
+                        <Button loading={loading} type="primary" block onClick={async () => {
+                            if (video && canvas) {
+                                canvas?.getContext("2d")?.drawImage(video, 0, 0, 200, 200);
+                                const dataURL = canvas.toDataURL('image/png');
+                                setLoading(true);
+                                try {
+                                    let res = await req({
+                                        method: "POST",
+                                        url: config.host + "/user/faceUpload",
+                                        data: {
+                                            userFace: dataURL.split("base64,")[1]
+                                        },
+                                        headers: {
+                                            token: userinfo?.token ?? ""
+                                        }
+                                    });
+                                    if (res.data.code === 200) {
+                                        message.success("上传成功");
+                                        setVisible(false);
+                                    } else {
+                                        message.error(res.data.msg);
+                                    }
+                                } catch (err: any) {
+                                    message.error(err.text);
+                                } finally {
+                                    setLoading(false);
+                                }
+                            }
+                        }}>上传</Button>
+                    </Col>
+                </Row>
+            </Modal>
+        </>
     )
 }
 

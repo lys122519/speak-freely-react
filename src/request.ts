@@ -10,13 +10,13 @@ const req = async (option: AxiosRequestConfig<any>) => {
         if (res.status >= 200 && res.status < 300) {
             if (res.data.code === 999) {
                 message.warning("登录已失效");
-                sessionStorage.removeItem("user");
+                localStorage.removeItem("user");
                 window.location.href = "/h/home";
                 return Promise.reject();
             }
             if (res.data.code === 401) {
                 message.warning("登录已失效");
-                sessionStorage.removeItem("user");
+                localStorage.removeItem("user");
                 window.location.href = "/h/home";
                 return Promise.reject();
             }

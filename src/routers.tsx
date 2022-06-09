@@ -3,6 +3,7 @@ import React from "react";
 import { Spin } from "antd";
 import { Routes, Route } from "react-router-dom";
 import { UserContext, UserInfo } from "./context/user";
+import req from "./request";
 //import SearchResult from "./pages/web/search_result/result";
 // import Article from "./pages/article";
 // import ArtEditor from "./pages/web/art_editor/article_editor";
@@ -52,6 +53,7 @@ const Routers: React.FC<any> = () => {
             localStorage.setItem("user", JSON.stringify(user));
         }
     }, [user])
+
     return (
         <UserContext.Provider value={{ userinfo: user, setUser: setUser }}>
             <Routes>
@@ -93,7 +95,7 @@ const Routers: React.FC<any> = () => {
                     <Route path="report" element={<Lazy render={<ReportAdmin />} />}></Route>
                     <Route path="comment" element={<Lazy render={<CommentAdmin />} />} />
                 </Route> : null}
-                
+
             </Routes>
         </UserContext.Provider>
     )

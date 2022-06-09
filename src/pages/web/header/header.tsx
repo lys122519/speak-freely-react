@@ -1,13 +1,15 @@
-import { Avatar, Button, Col, Dropdown, Layout, Menu, Modal, Row, Tabs } from "antd";
+import { Avatar, Button, Col, Dropdown, Layout, Menu, message, Modal, Row, Tabs } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { EditOutlined, PoweroffOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
 import "./header.less";
 import Register from "./rigister";
-import Login from "./loginform";
+import Login, { FaceLogin } from "./loginform";
 import { UserContext } from "../../../context/user";
 import { Link } from "react-router-dom";
 import Search from "./search";
+import req from "../../../request";
+import config from "../../../config";
 
 const {
     Header
@@ -18,7 +20,7 @@ const {
 } = Tabs;
 
 const UserMenu = () => {
-    const { setUser } = useContext(UserContext);
+    const { userinfo, setUser } = useContext(UserContext);
     return (
         <Menu
             items={[
@@ -27,6 +29,13 @@ const UserMenu = () => {
                     label: (
                         <Button type="link" icon={<PoweroffOutlined />} onClick={() => {
                             setUser(undefined);
+                            req({
+                                url: config.host + "/user/signOut",
+                                headers: {
+                                    token: userinfo?.token ?? ""
+                                },
+                                method: "POST"
+                            })
                             sessionStorage.removeItem("user");
                             localStorage.removeItem("user");
                         }}>
@@ -41,7 +50,6 @@ const UserMenu = () => {
 
 const AppHeader: React.FC<any> = (props) => {
     const { userinfo } = useContext(UserContext);
-    const [formVisible, setFormVisible] = useState<boolean>(false);
     const [select, setSelect] = useState("/h/home");
     const navgite = useNavigate();
     const location = useLocation();
@@ -73,18 +81,18 @@ const AppHeader: React.FC<any> = (props) => {
                         }}
                     />
                 </Col>
-                <Col span={8} style={{alignItems: "stretch", display: "flex", flexDirection: "column", justifyContent: "center"}}><Search /></Col>
+                <Col span={8} style={{ alignItems: "stretch", display: "flex", flexDirection: "column", justifyContent: "center" }}><Search /></Col>
                 <Col>
                     <div className="user-content">
                         {
                             !(userinfo && userinfo.status)
-                                ? <Button type="link" onClick={() => { setFormVisible(true) }}>登录/注册</Button>
+                                ? <LoginFormBox />
                                 : <UserAvatar />
                         }
                     </div>
                 </Col>
             </Row>
-            <LoginFormBox isShow={formVisible} onCancel={() => { setFormVisible(false) }} />
+
         </Header>
     )
 }
@@ -120,28 +128,60 @@ const UserAvatar = () => {
 }
 
 
-interface LoginFormBoxProps {
-    isShow?: boolean
-    onCancel: () => void
-}
 
-const LoginFormBox: React.FC<LoginFormBoxProps> = (props) => {
-    const {
-        isShow,
-        onCancel
-    } = props;
+
+const LoginFormBox: React.FC = (props) => {
+    const [isVisible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { setUser } = useContext(UserContext);
+    const [select, setSelect] = useState("login");
+    
+    const onCancel = () => {
+        setSelect("login");
+        setVisible(false);
+    }
 
     return (
-        <Modal style={{ top: 240 }} width={600} visible={isShow} footer={null} onCancel={onCancel}>
-            <Tabs defaultActiveKey="login">
-                <TabPane tab="登录" key="login">
-                    <Login close={onCancel} />
-                </TabPane>
-                <TabPane tab="注册" key="register">
-                    <Register close={onCancel} />
-                </TabPane>
-            </Tabs>
-        </Modal>
+        <>
+            <Button type="link" onClick={() => setVisible(true)}>登录/注册</Button>
+            <Modal destroyOnClose={true} style={{ top: 240 }} afterClose={() => {setSelect("login")}} width={600} visible={isVisible} footer={null} onCancel={onCancel}>
+                <Tabs activeKey={select} onChange={(act) => { setSelect(act) }} >
+                    <TabPane tab="登录" key="login">
+                        <Login visible={isVisible ?? false} close={onCancel} />
+                    </TabPane>
+                    <TabPane tab="人脸识别" key="face">
+                        <FaceLogin visible={isVisible && select === "face"} loading={loading} onLogin={async (base) => {
+                            setLoading(true);
+                            try {
+                                let res = await req({
+                                    method: "POST",
+                                    url: config.host + "/user/login",
+                                    data: { userFace: base.split("base64,")[1] },
+                                });
+                                if (res.data.code === 200) {
+                                    message.success("登录成功");
+                                    setUser({
+                                        status: 1,
+                                        ...res.data.data
+                                    });
+                                    onCancel()
+                                } else {
+                                    message.error(res.data.msg);
+                                }
+                            } catch (err: any) {
+                                message.error(err.text);
+                            } finally {
+                                setLoading(false);
+                            }
+                        }} />
+                    </TabPane>
+                    <TabPane tab="注册" key="register">
+                        <Register close={onCancel} />
+                    </TabPane>
+                </Tabs>
+            </Modal>
+        </>
+
     )
 }
 

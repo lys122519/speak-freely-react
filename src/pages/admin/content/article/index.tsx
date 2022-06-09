@@ -3,6 +3,7 @@ import { Button, Card, Form, Select, Space, Table, Input, Modal, message } from 
 import { useForm } from "antd/lib/form/Form";
 import { ColumnsType } from "antd/lib/table";
 import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
 import { useFetch } from "../../../../hooks/fetch";
@@ -22,6 +23,9 @@ const ArtAdmin = () => {
             title: '标题',
             dataIndex: 'name',
             key: 'name',
+            render: (title, record) => {
+                return <Link to={`/h/article/${record.id}`} target="_blank">{title}</Link>
+            }
         },
         {
             title: "作者",

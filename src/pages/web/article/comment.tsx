@@ -1,5 +1,5 @@
-import { CommentOutlined, PropertySafetyTwoTone } from '@ant-design/icons';
-import { Avatar, Button, Card, Comment, Form, Input, message, Modal, Pagination, Space } from 'antd';
+import { AlertOutlined, CommentOutlined, PropertySafetyTwoTone } from '@ant-design/icons';
+import { Avatar, Button, Card, Col, Comment, Form, Input, message, Modal, Pagination, Row, Space } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import config from '../../../config';
@@ -93,7 +93,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, children, reFresh }) =>
     return (
         <>
             <Comment
-                actions={[<span key="comment-nested-reply-to" onClick={() => { setVisible((v) => !v) }}>回复</span>, <Report loading={reportLoading} key="report" onReport={onReport} />]}
+                actions={[<span key="comment-nested-reply-to" onClick={() => { setVisible((v) => !v) }}>回复</span>, <Report loading={reportLoading} key="report" onReport={onReport} render="举报" />]}
                 author={<Link to={`/h/space/${data.userId}`}>{data.nickname}</Link>}
                 avatar={<Avatar src={data.avatarUrl} alt="Han Solo" />}
                 content={
@@ -119,16 +119,17 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, children, reFresh }) =>
 interface ReportProps {
     onReport: (reson: string) => void
     loading?: boolean
+    render?: React.ReactNode
 }
 
-const Report: React.FC<ReportProps> = ({ onReport, loading }) => {
+const Report: React.FC<ReportProps> = ({ onReport, loading, render }) => {
     const [visible, setVisible] = useState(false);
     const [value, setValue] = useState("");
     return (
         <>
             <span onClick={() => {
                 setVisible(true);
-            }} key="report">举报</span>
+            }} key="report">{render}</span>
             <Modal
                 visible={visible}
                 onCancel={() => {
@@ -147,13 +148,15 @@ const Report: React.FC<ReportProps> = ({ onReport, loading }) => {
                     <Form.Item
                         label="举报理由"
                     >
-                        <Input.TextArea onChange={(e) => {setValue(e.target.value)}} value={value}></Input.TextArea>
+                        <Input.TextArea onChange={(e) => { setValue(e.target.value) }} value={value}></Input.TextArea>
                     </Form.Item>
                 </Form>
             </Modal>
         </>
     )
 }
+
+
 
 const CommentControl: React.FC = () => {
     const [data, refresh, setOps] = useFetch<CommentFetchData | undefined>({}, undefined);
@@ -211,20 +214,54 @@ const CommentControl: React.FC = () => {
 
     const renderTree = (list: CommentData[]) => {
         return list.map((item) => {
-            return <CommentItem data={item} reFresh={refresh}>
+            return <CommentItem key={item.id} data={item} reFresh={refresh}>
                 {item.children ? renderTree(item.children) : undefined}
             </CommentItem>
         });
     }
 
+    const onReport = async (value: string) => {
+        setLoading(true);
+        try {
+            let res = await req({
+                url: config.host + "/report",
+                method: "POST",
+                data: {
+                    articleId: articleId,
+                    content: value,
+                },
+                headers: {
+                    token: userinfo?.token ?? ""
+                }
+            });
+            if (res.data.code === 200) {
+                message.success("举报成功");
+            } else {
+                message.error(res.data.msg)
+            }
+        } catch (err) {
+            console.log(err);
+            message.error("出现异常，详见控制台");
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <Card>
-                <div style={{ cursor: "pointer" }} onClick={() => {
-                    setShow((isShow) => {
-                        return !isShow;
-                    })
-                }}><CommentOutlined />评论</div>
+                <Row gutter={10}>
+                    <Col>
+                        <Button type='link' onClick={() => {
+                            setShow((isShow) => {
+                                return !isShow;
+                            })
+                        }}><CommentOutlined />评论</Button>
+                    </Col>
+                    <Col>
+                        <Report onReport={onReport} render={<Button type="link"><AlertOutlined />举报</Button>}/>
+                    </Col>
+                </Row>
             </Card>
             {commentShow ? <Editor submitting={loading} value={editorValue} onChange={onChange} onSubmit={onSubmit} /> : null}
             <Card>
@@ -258,5 +295,7 @@ const Editor = ({ onChange, onSubmit, submitting, value }: EditorProps) => (
         </Form.Item>
     </>
 );
+
+
 
 export default CommentControl;

@@ -15,6 +15,7 @@ import { UserContext, UserInfo } from "./context/user";
 // import AdminIndex from "./pages/admin";
 // import ArtAdmin from "./pages/admin/content/article";
 // import UserAdmin from "./pages/admin/content/user";
+const CommentSet = React.lazy(() => import('./pages/web/personal/content_set/comment/comment_set'));
 const UserSpace = React.lazy(() => import('./pages/web/space/space'));
 const CommentAdmin = React.lazy(() => import('./pages/admin/content/comment'));
 const ReportAdmin = React.lazy(() => import('./pages/admin/content/report'));
@@ -39,16 +40,16 @@ const UserAdmin = React.lazy(() => import('./pages/admin/content/user'));
 const Routers: React.FC<any> = () => {
     const [user, setUser] = useState<UserInfo>();
     useEffect(() => {
-        if (sessionStorage.getItem("user")) {
+        if (localStorage.getItem("user")) {
             setUser({
                 status: 1,
-                ...JSON.parse(sessionStorage.getItem("user") as string)
+                ...JSON.parse(localStorage.getItem("user") as string)
             });
         }
     }, []);
     useEffect(() => {
         if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem("user", JSON.stringify(user));
         }
     }, [user])
     return (
@@ -66,6 +67,7 @@ const Routers: React.FC<any> = () => {
                             <Route path="acount-set" element={<Lazy render={<AcountSet />} />}></Route>
                             <Route path="base-info" element={<Lazy render={<UserInfoC />} />}></Route>
                             <Route path="article-set" element={<Lazy render={<ArticleSet />} />} />
+                            <Route path="comment-set" element={<Lazy render={<CommentSet />} />} />
                         </Route>
 
                         <Route path="editor" element={<Lazy render={<ArtEditor />} />} >

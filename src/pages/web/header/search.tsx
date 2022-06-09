@@ -1,25 +1,28 @@
 import { AutoComplete, Input, Tag } from "antd";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useFetch } from "../../../hooks/fetch";
 import { TagData } from "../art_editor/article_editor";
 
 const Search: React.FC = () => {
-    const [hotTagsRes] = useFetch<any>({
-        path: "/tags/top100",
-    }, []);
+    const [hotTagsRes, , setOps] = useFetch<any>({}, []);
     const [value, setValue] = useState("");
     const [select, setSelect] = useState<TagData | undefined>(undefined);
     const nav = useNavigate();
+    const [search] = useSearchParams();
+    let location = useLocation();
 
     useEffect(() => {
-        if(select) {
-            setValue("");
+        if(search.get("tag")) {
+            setSelect({
+                id: parseInt(search.get("tag") ?? "-1"),
+                content: search.get("tag_content") ?? ""
+            });
         }
-        if(select || value) {
-            nav(`/h/search?${select ? `tag=${select.id}&` : ""}search=${select ? "" : value}`);
+        if(search.get("search")) {
+            setValue(search.get("search") ?? "")
         }
-    }, [select, nav]);
+    }, [location])
 
     let hotTags: TagData[] = [];
 
@@ -28,9 +31,8 @@ const Search: React.FC = () => {
     }
 
     const handleSearch = (value: string) => {
-        console.log(1)
         if(select || value) {
-            nav(`/h/search?${select ? `tag=${select.id}&` : ""}search=${value}`);
+            nav(`/h/search?${select ? `tag=${select.id}&tag_content=${select.content}&` : ""}search=${value}`);
         } 
     }
 
@@ -39,6 +41,7 @@ const Search: React.FC = () => {
             content: option.label,
             id: option.value
         });
+        setValue("");
         return false;
     }
 
@@ -66,7 +69,7 @@ const Search: React.FC = () => {
                 onSelect={onSelect}
                 backfill={false}
             >
-                <Input.Search prefix={select ? <Tag color="blue"
+                <Input.Search onFocus={() => setOps({path: "/tags/top100"})} prefix={select ? <Tag color="blue"
                 onClose={() => {
                     setSelect(undefined);
                 }} closable>{select?.content}</Tag> : null} onSearch={handleSearch} style={{width: "100%"}} size="large" placeholder="搜索" enterButton />

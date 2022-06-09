@@ -1,14 +1,18 @@
 import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
-import { Button, Card, Col, List, Row, Skeleton } from "antd";
+import { Avatar, Button, Card, Col, List, Row, Skeleton, Tag, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { UserContext } from "../../../context/user";
 import { useFetch, useTestFetch } from "../../../hooks/fetch";
+import { ArticleDataFetchResponseData } from "../../../types/article";
+
+const { Text, Title } = Typography;
+
 
 const SearchResult: React.FC = () => {
     return (
         <>
-            <div className="content" style={{marginTop: 10}}>
+            <div className="content" style={{ marginTop: 10 }}>
                 <Row justify="center">
                     <Col span={18}>
                         <Card>
@@ -21,21 +25,11 @@ const SearchResult: React.FC = () => {
     )
 }
 
-const data = Array.from({ length: 23 }).map((_, i) => ({
-    href: 'https://ant.design',
-    title: `文章标题 ${i}`,
-    avatar: 'https://joeschmoe.io/api/v1/random',
-    description:
-        '我是用户名',
-    content:
-        '我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容我是文章内容',
-}));
-
 const ArtList: React.FC = () => {
-    const [listData, , setOps ,loading] = useFetch<any[]>({}, []);
+    const [listData, , setOps, loading] = useFetch<ArticleDataFetchResponseData | undefined>({}, undefined);
     const [p] = useSearchParams();
     const [page, setPage] = useState(1);
-    const {userinfo} = useContext(UserContext);
+    const { userinfo } = useContext(UserContext);
 
     useEffect(() => {
         setOps({
@@ -43,10 +37,8 @@ const ArtList: React.FC = () => {
             data: {
                 searchTagID: p.get("tag"),
                 searchArticleTitle: p.get("search"),
-                page: page,
-                limit: 10 
             },
-            method: "POST",
+            method: "GET",
             token: userinfo?.token
         });
     }, [p])
@@ -63,14 +55,14 @@ const ArtList: React.FC = () => {
                 pageSize: 3,
             }
             }
-            dataSource={listData}
+            dataSource={listData?.records}
             renderItem={item => (
                 <List.Item
-                    key={item.title}
+                    key={item.id}
                     actions={[
-                        <Button type="link" size="small" icon={<StarOutlined />} key="list-vertical-star-o">156</Button>,
-                        <Button type="link" size="small" icon={<LikeOutlined />} key="list-vertical-like-o">156</Button>,
-                        <Button type="link" size="small" icon={<MessageOutlined />} key="list-vertical-message">2</Button>,
+                        <Text key="list-vertical-star-o"><StarOutlined /> 156</Text>,
+                        <Text key="list-vertical-like-o"><LikeOutlined /> 156</Text>,
+                        <Text key="list-vertical-message"><MessageOutlined /> 2</Text>,
                     ]}
                 // extra={
                 //     <img
@@ -80,12 +72,15 @@ const ArtList: React.FC = () => {
                 //     />
                 // }
                 >
-                    <List.Item.Meta
-                        // avatar={<Avatar src={item.avatar} />}
-                        title={<a href={item.href}>{item.title}</a>}
-                        description={item.description}
-                    />
-                    {item.content}
+                    <Row justify="space-between" align="middle">
+                        <Col>
+                            <Link to={`/h/article/${item.id}`}><Title level={4}>{item.name}</Title></Link>
+                            {item.tagsContent.split(";").map((tag, index) => {
+                                return <Link key={item.tagsID.split(";")[index]} to={`/h/search?tag=${item.tagsID.split(";")[index]}&tag_content=${tag}`}><Tag>{tag}</Tag></Link>
+                            })}
+                        </Col>
+                        <Col style={{ color: "#999" }}>作者：<Link to={`/h/space/${item.userId}`}>{item.authorNickname}</Link></Col>
+                    </Row>
                 </List.Item>
             )}
         />

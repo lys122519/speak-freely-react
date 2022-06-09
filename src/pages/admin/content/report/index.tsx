@@ -8,9 +8,7 @@ import { UserContext } from "../../../../context/user";
 import { useFetch } from "../../../../hooks/fetch";
 import req from "../../../../request";
 import { ReportFetchData } from "../../../../types/report";
-import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
 
-const { Text } = Typography;
 const { Option } = Select;
 
 
@@ -75,10 +73,10 @@ const ReportAdmin = () => {
     return (
         <>
             <Space size={10} direction="vertical" style={{ width: "100%" }} >
-                <TableControlForm
+                {/* <TableControlForm
                     fieldValue={{ status: type }}
                     onChange={(f) => { setType(f.status ?? "all") }}
-                />
+                /> */}
                 <Table
                     dataSource={res?.records}
                     columns={columns}

@@ -8,9 +8,8 @@ import config from "../../../../config";
 import { UserContext } from "../../../../context/user";
 import { useFetch } from "../../../../hooks/fetch";
 import req from "../../../../request";
-import { fetchResponseData } from "../../../web/personal/content_set/article_set/article_set";
+import { CommentFetchData } from "../../../../types/comment";
 
-const { Text } = Typography;
 const { Option } = Select;
 
 
@@ -19,7 +18,7 @@ const CommentAdmin = () => {
     const { userinfo } = useContext(UserContext);
     const [page, setPage] = useState(1);
     const [type, setType] = useState("all");
-    const [res, refresh, setOps, err, isLoading] = useFetch<fetchResponseData | undefined>({}, undefined);
+    const [res, refresh, setOps, err, isLoading] = useFetch<CommentFetchData | undefined>({}, undefined);
 
     const columns: ColumnsType<any> = [
         {
@@ -30,7 +29,10 @@ const CommentAdmin = () => {
         {
             title: "评论人",
             dataIndex: "nickname",
-            key: "nickname"
+            key: "nickname",
+            render: (item, record) => {
+                return <Link to={`/admin/user?search=${record.userId}`}>{item}</Link>
+            }
         },
         {
             title: "时间",
@@ -39,10 +41,10 @@ const CommentAdmin = () => {
         },
         {
             title: "所属文章",
-            dataIndex: "articleId",
-            key: "articleId",
-            render: (item) => {
-                return <Link to={`/h/article/${item}`}>查看</Link>
+            dataIndex: "articleName",
+            key: "articleName",
+            render: (item, record) => {
+                return <Link to={`/h/article/${record.articleId}`}>{item}</Link>
             }
         },
         {
@@ -61,8 +63,12 @@ const CommentAdmin = () => {
 
     useEffect(() => {
         setOps({
-            path: `/article/${type}/${page}/8`,
-            token: userinfo?.token
+            path: `/comment/page`,
+            token: userinfo?.token,
+            data: {
+                pageNum: page,
+                pageSize: 8
+            }
         });
     }, [page, type])
 
@@ -78,8 +84,12 @@ const CommentAdmin = () => {
                     columns={columns}
                     pagination={{
                         pageSize: 8,
-                        total: res?.total
+                        total: res?.total,
+                        onChange: (p) => {
+                            setPage(p);
+                        }
                     }}
+                    loading={isLoading}
                     rowKey={(item) => item.id}
                 ></Table>
             </Space>
@@ -154,7 +164,7 @@ const DeleteModal: React.FC<DeleteModalProps> = (props) => {
         setLoading(true);
         try {
             let res = await req({
-                url: config.host + `/report/${props.id}`,
+                url: config.host + `/comment/${props.id}`,
                 method: "DELETE",
                 headers: {
                     token: userinfo?.token ?? ""

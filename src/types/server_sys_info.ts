@@ -16,3 +16,10 @@ export type ServerSysInfo = {
     memoryUsed: string
     sysInfo: string
 }
+
+export enum UserInfoName {
+    "userCount" = "用户总数",
+    "activeUser" = "当前在线"
+}
+
+export type UserInfoNameIndex = keyof typeof UserInfoName;

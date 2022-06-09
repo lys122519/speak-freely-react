@@ -5,7 +5,13 @@ export type ArticleData = {
     time: string,
     username: string,
     userid: string,
-    enabled: string
+    enabled: string,
+    authorAvatarUrl: string,
+    authorNickname: string,
+    tagsID: string,
+    tagsContent: string
+    tagsCounts: string
+    userId: number
 }
 
 export type ArticleDataFetchResponseData = {

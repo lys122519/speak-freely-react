@@ -19,6 +19,7 @@ const UserSpaceBaseContent: React.FC = () => {
             key: 'content-admin',
             children: [
                 { label: '文章管理', key: 'article-set' },
+                { label: '评论管理', key: 'comment-set' }
             ]
         }
     ];

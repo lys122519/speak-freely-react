@@ -10,6 +10,8 @@ export type CommentData = {
     pid: number
     pNickName: string
     originId: number
+    pUserId: number
+    articleName: string
 }
 
 export type CommentFetchData = {

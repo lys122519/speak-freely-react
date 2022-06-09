@@ -14,6 +14,12 @@ const req = async (option: AxiosRequestConfig<any>) => {
                 window.location.href = "/h/home";
                 return Promise.reject();
             }
+            if (res.data.code === 401) {
+                message.warning("登录已失效");
+                sessionStorage.removeItem("user");
+                window.location.href = "/h/home";
+                return Promise.reject();
+            }
             return Promise.resolve(res);
         } else {
             return Promise.reject({

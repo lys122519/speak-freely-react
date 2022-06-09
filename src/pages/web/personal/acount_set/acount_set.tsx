@@ -13,7 +13,8 @@ const AcountSet: React.FC = () => {
     const [emailStatus, setEmailStatus] = useState(false);
     const [emailTime, setETime] = useState(0);
     const [emailCodeLoading, setECodeLoad] = useState(false);
-
+    const [passCodeLoading, setPCodeLoad] = useState(false);
+    const [passLoading, setPLoading] = useState(false);
     const [emailForm] = useForm();
 
     const getECode = async () => {
@@ -51,6 +52,38 @@ const AcountSet: React.FC = () => {
         }
     }
 
+    const getPCode = async () => {
+        setPCodeLoad(true);
+        try {
+            let email = userinfo?.email;
+            if (email) {
+                let res = await req({
+                    url: config.host + `/user/emailCode/emailInfoModify/${email}`,
+                    method: "POST"
+                });
+                if (res.data.code === 200) {
+                    setPTime(60);
+                    let timer = setInterval(() => {
+                        setPTime((time) => {
+                            if (time === 0) {
+                                clearInterval(timer);
+                                return 0;
+                            }
+                            return time - 1;
+                        });
+                    }, 1000);
+                } else {
+                    message.error(res.data.msg);
+                }
+            }
+        } catch (err) {
+            console.log(err);
+            message.error("发生异常，详见控制台");
+        } finally {
+            setPCodeLoad(false)
+        }
+    }
+
     const onEmailSubmit = async () => {
         setEmailLoading(true);
         try {
@@ -84,6 +117,40 @@ const AcountSet: React.FC = () => {
             setEmailLoading(false);
         }
     }
+
+    const onPassSubmit = async () => {
+        setPLoading(true);
+        try {
+            let newpwd = form.getFieldValue("newpwd");
+            let res = await req({
+                url: config.host + "/user/infoModify",
+                method: "POST",
+                data: {
+                    password: newpwd,
+                    token: userinfo?.token,
+                    code: form.getFieldValue("code")
+                }
+            });
+            if (res.data.code === 200) {
+                message.success("修改成功");
+                form.resetFields();
+                setUser((u) => {
+                    return {
+                        ...u,
+                        password: newpwd
+                    } as any
+                })
+            } else {
+                message.error(res.data.msg);
+            }
+        } catch (err) {
+            console.log(err);
+            message.error("发生异常，详见控制台");
+        } finally {
+            setPLoading(false);
+        }
+    }
+
     return (
         <Space direction="vertical" size={10} style={{ width: "100%", display: "flex" }}>
 
@@ -94,47 +161,57 @@ const AcountSet: React.FC = () => {
                     labelCol={{ span: 4 }}
                     wrapperCol={{ span: 10 }}
                     style={{ paddingTop: 0 }}
+                    onFinish={onPassSubmit}
                 >
-                    <Form.Item
-                        label="验证码"
-                        name="code"
-                    >
-                        <Input.Group compact>
-                            <Input style={{ width: 'calc(100% - 150px)' }} autoComplete="off" />
-                            <Button
-                                style={{ width: 150 }}
-                                disabled={!!passwordtime}
-                                onClick={() => {
-                                    setPTime(60);
-                                    let timer = setInterval(() => {
-                                        setPTime((time) => {
-                                            if (time === 0) {
-                                                clearInterval(timer);
-                                                return 0;
-                                            }
-                                            return time - 1;
-                                        });
-                                    }, 1000);
-                                }}
-                            >
-                                {passwordtime ? `${passwordtime}秒后可重新获取` : "获取验证码"}
-                            </Button>
-                        </Input.Group>
+                    <Form.Item wrapperCol={{ span: 14 }} noStyle>
+                        <Row gutter={0}>
+                            <Col span={12}>
+                                <Form.Item
+                                    label="验证码"
+                                    name="code"
+                                    rules={[{ required: true, message: '请输入正确的验证码', pattern: /^[A-Za-z0-9]{4}$/ }]}
+                                    labelCol={{ span: 8 }}
+                                    wrapperCol={{ span: 16 }}
+                                >
+                                    <Input autoComplete="off" />
+                                </Form.Item>
+                            </Col>
+                            <Col span={4}>
+                                <Button
+                                    disabled={!!passwordtime}
+                                    onClick={getPCode}
+                                    block
+                                    loading={passCodeLoading}
+                                >
+                                    {passwordtime ? `${passwordtime}` : "获取验证码"}
+                                </Button>
+                            </Col>
+                        </Row>
                     </Form.Item>
                     <Form.Item
                         label="新密码"
                         name="newpwd"
+                        rules={[{ required: true, message: '密码以字母开头，长度在6~18之间，只能包含字母、数字和下划线', pattern: /^[a-zA-Z]\w{5,17}$/ }]}
                     >
                         <Input.Password autoComplete="new-password" />
                     </Form.Item>
                     <Form.Item
                         label="确认密码"
                         name="confirmpwd"
+                        rules={[{
+                            required: true, message: '密码不一致', validator: (_, v) => {
+                                if (v === form.getFieldValue("confirmpwd")) {
+                                    return Promise.resolve();
+                                } else {
+                                    return Promise.reject();
+                                }
+                            }
+                        }]}
                     >
                         <Input.Password />
                     </Form.Item>
                     <Form.Item wrapperCol={{ offset: 4 }}>
-                        <Button type="primary" htmlType="submit">重置密码</Button>
+                        <Button type="primary" htmlType="submit" loading={passLoading}>重置密码</Button>
                     </Form.Item>
                 </Form >
             </Card>
@@ -222,7 +299,7 @@ const UploadFace: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [video, setVideo] = useState<HTMLVideoElement>();
     const [canvas, setCanvas] = useState<HTMLCanvasElement>();
-    const {userinfo} = useContext(UserContext);
+    const { userinfo } = useContext(UserContext);
 
     const getEle: React.LegacyRef<HTMLVideoElement> = (e) => { if (e) { setVideo(e) } }
     const getCanvas: React.LegacyRef<HTMLCanvasElement> = (e) => { if (e) { setCanvas(e) } }

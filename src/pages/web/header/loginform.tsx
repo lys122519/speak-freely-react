@@ -111,20 +111,28 @@ export const FaceLogin: React.FC<FaceLoginProps> = ({ onLogin, loading, visible 
         if (video && visible) {
             videoPaly();
             return () => {
+                try {
+                    const tracks = (video.srcObject as MediaStream).getTracks();
+                    console.log("停止录像");
+                    tracks.forEach(function (track) {
+                        track.stop();
+                    });
+                } catch(err) {
+                    console.log(err);
+                }
+            }
+        }
+
+        if (video && !visible) {
+            try {
                 const tracks = (video.srcObject as MediaStream).getTracks();
                 console.log("停止录像");
                 tracks.forEach(function (track) {
                     track.stop();
                 });
+            } catch(err) {
+                console.log(err);
             }
-        }
-
-        if (video && !visible) {
-            const tracks = (video.srcObject as MediaStream).getTracks();
-            console.log("停止录像");
-            tracks.forEach(function (track) {
-                track.stop();
-            });
         }
     }, [video, visible]);
 

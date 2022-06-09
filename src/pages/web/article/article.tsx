@@ -1,4 +1,4 @@
-import { Card, Col, Row, Typography } from "antd";
+import { Card, Col, Row, Typography, Image } from "antd";
 import ReactMarkdown from "react-markdown";
 import { useParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
@@ -66,6 +66,9 @@ const MDArticle: React.FC = () => {
                             },
                             h6({children, className}) {
                                 return <h6 className={className} id={String(children).toLowerCase().replaceAll(" ", "-")}>{children}</h6>
+                            },
+                            img({src, alt}) {
+                                return <Image src={src} style={{width: "100%"}} alt={alt} />
                             }
                         }}
                         remarkPlugins={[remarkToc.bind(this, {heading: ""}), remarkGfm]}

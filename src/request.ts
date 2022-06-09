@@ -3,9 +3,14 @@ import request, { AxiosRequestConfig } from "axios";
 
 const req = async (option: AxiosRequestConfig<any>) => {
     try {
+        let user = JSON.parse(localStorage.getItem("user") ?? "null");
         let res = await request({
             ...option,
             timeout: 5000,
+            headers: {
+                ...option.headers,
+                token: user ? user.token : option.headers?.token
+            }
         });
         if (res.status >= 200 && res.status < 300) {
             if (res.data.code === 999) {

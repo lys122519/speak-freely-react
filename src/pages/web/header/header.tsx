@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Dropdown, Layout, Menu, message, Modal, Row, Tabs } from "antd";
+import { Avatar, Button, Col, Dropdown, Image, Layout, Menu, message, Modal, Row, Tabs } from "antd";
 import { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { EditOutlined, PoweroffOutlined, SettingOutlined, UserOutlined } from "@ant-design/icons";
@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Search from "./search";
 import req from "../../../request";
 import config from "../../../config";
+import logo from "../../../image/logo.png";
 
 const {
     Header
@@ -67,6 +68,7 @@ const AppHeader: React.FC<any> = (props) => {
     return (
         <Header style={{ background: "#fff" }}>
             <Row align="middle" justify="space-between" className="header-content">
+                <Col><Image src={logo} height={40} /></Col>
                 <Col>
                     <Menu
                         theme="light"

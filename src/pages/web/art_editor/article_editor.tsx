@@ -344,7 +344,7 @@ const TagsControl: React.FC<TagsControlProps> = (props) => {
 
     const handleClose = (removedTag: number) => {
         tags.splice(removedTag, 1);
-        props.onChange(tags);
+        props.onChange(tags.slice());
     };
 
     const showInput = () => {

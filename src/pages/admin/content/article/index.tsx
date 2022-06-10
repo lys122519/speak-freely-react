@@ -17,6 +17,7 @@ const ArtAdmin = () => {
     const [page, setPage] = useState(1);
     const [type, setType] = useState("all");
     const [res, refresh, setOps, err, isLoading] = useFetch<ArticleDataFetchResponseData | undefined>({}, undefined);
+    const [search, setSearch] = useState('');
 
     const columns: ColumnsType<any> = [
         {
@@ -61,23 +62,30 @@ const ArtAdmin = () => {
 
     useEffect(() => {
         setOps({
-            path: `/article/${type}/${page}/8`,
+            path: `/article/${type}/${page}/8?search=${search}`,
         });
-    }, [page, type])
+    }, [page, type, search])
 
     return (
         <>
             <Space size={10} direction="vertical" style={{ width: "100%" }} >
                 <TableControlForm
                     fieldValue={{ status: type }}
-                    onChange={(f) => { setType(f.status ?? "all") }}
+                    onChange={(f) => { setType(f.status ?? "all");}}
+                    onSearch={(s) => {
+                        setSearch(s)
+                    }}
                 />
                 <Table
                     dataSource={res?.records}
                     columns={columns}
                     pagination={{
                         pageSize: 8,
-                        total: res?.total
+                        total: res?.total,
+                        onChange: (p) => {
+                            setPage(p)
+                        },
+                        current: page
                     }}
                     rowKey={(item) => item.id}
                 ></Table>

@@ -41,8 +41,8 @@ const Recommendation: React.FC = () => {
             renderItem={item => (
                 <List.Item
                     key={item.id}
-                    actions={item.tagsID.split(";").map((tagId, index) => {
-                        return <Link key={tagId} to={`/h/search?tag=${tagId}&tag_content=${item.tagsContent.split(";")[index]}`}><Tag>{item.tagsContent.split(";")[index]}</Tag></Link>
+                    actions={item.tagsID?.split(";").map((tagId, index) => {
+                        return <Link key={tagId} to={`/h/search?tag=${tagId}&tag_content=${item.tagsContent?.split(";")[index]}`}><Tag>{item.tagsContent?.split(";")[index]}</Tag></Link>
                     })}
                 // extra={
                 //     <img

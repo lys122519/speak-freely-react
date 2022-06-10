@@ -34,7 +34,8 @@ const Recommendation: React.FC = () => {
                 pageSize: 5,
                 onChange:(p) => {
                     setPage(p)
-                }
+                },
+                current: page
             }}
             dataSource={arts?.records}
             renderItem={item => (

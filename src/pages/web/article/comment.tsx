@@ -99,7 +99,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ data, children, reFresh }) =>
                 content={
                     <p>
                         <Space size={5}>
-                            <span>{data.pNickName && data.pid !== data.originId ? <Link to={""}>@ {data.pNickName}</Link> : null}</span>
+                            <span>{data.pNickName && data.pid !== data.originId ? <Link to={`/h/space/${data.pUserId}`}>@ {data.pNickName}</Link> : null}</span>
                             <span>{data.content}</span>
                         </Space>
                     </p>

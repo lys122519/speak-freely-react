@@ -53,7 +53,7 @@ const Recommendation: React.FC = () => {
                 // }
                 >
                     <List.Item.Meta
-                        avatar={<Avatar src={item.authorAvatarUrl} />}
+                        avatar={<Link to={"/h/space/" + item.userId}><Avatar src={item.authorAvatarUrl} /></Link>}
                         title={<Link to={`/h/article/${item.id}`}>{item.name}</Link>}
                         description={item.authorNickname}
                     />
